@@ -1,6 +1,6 @@
 # Bloch Sphere
 
-An interactive Bloch sphere for beginner quantum students: a static, desktop website with no backend. `docs/design.md` is the design, and `docs/design-gates.md` covers gates and the Gate Lab; read them before changing structure. Circuits of interacting qubits (the Circuit Lab) are a separate project, not part of this site; that work is parked on the `circuit-lab` branch (`design-gates.md` §4.2).
+An interactive Bloch sphere for beginner quantum students: a static, desktop website with no backend. `docs/design.md` is the design, and `docs/design-gates.md` covers gates and the Gate Lab; read them before changing structure. Circuits of interacting qubits (the Circuit Lab) are a separate project, not part of this site. **This is the `circuit-lab` branch,** where that work is parked: its design is `docs/design-circuits.md`, and its UI (`web/src/ui/circuit/`) has never been tried in a browser.
 
 ## Layout
 

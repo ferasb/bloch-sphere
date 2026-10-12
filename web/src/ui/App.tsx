@@ -1,3 +1,4 @@
+import { CircuitLab } from "./circuit/CircuitLab";
 import { GateToolbar } from "./controls/GateToolbar";
 import { QubitStrip } from "./controls/QubitStrip";
 import { GateLab } from "./lab/GateLab";
@@ -19,6 +20,7 @@ const journeySource = sourceFrom(useApp, journeyProjector());
 const ROOMS: [Room, string][] = [
   ["sphere", "Sphere"],
   ["lab", "Gate Lab"],
+  ["circuit", "Circuit Lab"],
 ];
 
 /** The shell: the title, the room switcher, and whichever room is open (design-gates.md §5). */
@@ -45,7 +47,7 @@ export function App() {
           </nav>
         </div>
       </header>
-      {room === "lab" ? <GateLab /> : <SphereRoom />}
+      {room === "lab" ? <GateLab /> : room === "circuit" ? <CircuitLab /> : <SphereRoom />}
     </div>
   );
 }

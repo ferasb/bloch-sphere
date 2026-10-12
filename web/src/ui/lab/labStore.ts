@@ -5,7 +5,7 @@ import { loadTiles, MAX_LABEL, MAX_NAME, product, reversed, saveTiles, scaleBenc
 import type { SavedGate } from "../../model/library";
 import { Sphere } from "../../model/sphere";
 import { loadLabSession, saveLabSession } from "../../persist/labSession";
-import { makePlayer } from "../playhead";
+import { journeyPlayer } from "../playhead";
 import type { JourneyView, Preview } from "../view";
 
 /**
@@ -200,7 +200,7 @@ export const useLab = create<LabState>()((set, get) => ({
   },
 }));
 
-const player = makePlayer(useLab);
+const player = journeyPlayer(useLab);
 
 useLab.subscribe((s, prev) => {
   if (

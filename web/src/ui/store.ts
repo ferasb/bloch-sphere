@@ -2,12 +2,12 @@ import { create } from "zustand";
 import { Qubit } from "../math/qubit";
 import { Sphere, type Action, type GateSpec, type QubitId } from "../model/sphere";
 import { loadSession, saveSession } from "../persist/session";
-import { makePlayer } from "./playhead";
+import { journeyPlayer } from "./playhead";
 import { targets, type JourneyView, type Preview } from "./view";
 
 /** The main room: its journey and view state (JourneyView), the Restore slot, and the actions. */
 export interface AppState extends JourneyView {
-  /** The sphere from before the last Reset or Set state, while its Restore notice is up. */
+  /** The sphere from before the last Reset, Set state or Run on sphere, while its Restore notice is up. */
   restorable: Sphere | null;
   /** What the Restore notice says happened. */
   restoreNote: string;
@@ -21,6 +21,8 @@ export interface AppState extends JourneyView {
   undo(): void;
   reset(): void;
   restore(): void;
+  /** Replace the journey with another (from the Circuit Lab) and play it from the start. */
+  loadJourney(sphere: Sphere, note: string): void;
   dismissRestore(): void;
   select(id: QubitId): void;
   setApplyToAll(on: boolean): void;
@@ -104,6 +106,21 @@ export const useApp = create<AppState>()((set, get) => ({
     set({ sphere: sphere.reset(), restorable: sphere, restoreNote: "Journey cleared.", playhead: 0, live: true });
   },
 
+  loadJourney(next, note) {
+    const { sphere, selected } = get();
+    player.stop();
+    set({
+      sphere: next,
+      restorable: sphere.canUndo ? sphere : null,
+      restoreNote: note,
+      playhead: 0,
+      live: true,
+      preview: null,
+      selected: validSelection(next, selected),
+    });
+    player.play();
+  },
+
   restore() {
     const { restorable, selected } = get();
     if (restorable) {
@@ -156,4 +173,4 @@ function validSelection(sphere: Sphere, id: QubitId): QubitId {
   return sphere.qubit(id) ? id : sphere.qubits[0].id;
 }
 
-const player = makePlayer(useApp);
+const player = journeyPlayer(useApp);

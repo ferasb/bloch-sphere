@@ -3,7 +3,7 @@ import { useApp } from "../store";
 
 const VISIBLE_MS = 6000;
 
-/** After Reset or Set state: a few seconds to bring the cleared journey back, since Undo can't. */
+/** After Reset, Set state or Run on sphere: a few seconds to bring the journey back, since Undo can't. */
 export function RestoreNotice() {
   const restorable = useApp((s) => s.restorable);
   const note = useApp((s) => s.restoreNote);

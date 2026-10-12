@@ -2,6 +2,7 @@ import { formulaText } from "../../format/bench";
 import { rotationText } from "../../format/rotation";
 import { tile } from "../../model/bench";
 import { MAX_PINNED, savedGateMatrix, type SavedGate } from "../../model/library";
+import { useCircuit, type PaletteItem } from "../circuit/circuitStore";
 import { savedGateSpec } from "../gates";
 import { useLab } from "../lab/labStore";
 import { canPin, useLibrary } from "../libraryStore";
@@ -14,15 +15,20 @@ export function savedTile(g: SavedGate) {
   return tile({ kind: "saved", name: g.name, label: g.label, tiles: g.tiles });
 }
 
+/** A saved gate as a Circuit Lab palette item. */
+export function savedItem(g: SavedGate): PaletteItem {
+  return { kind: "gate", label: g.label, title: savedGateTitle(g), tile: () => savedTile(g) };
+}
+
 export function savedGateTitle(g: SavedGate): string {
   return `${g.name} = ${formulaText(g.tiles)} · ${rotationText(savedGateMatrix(g))}`;
 }
 
 /**
- * My gates as a popover: every saved gate, with Apply (or Add, in the lab), Edit, Pin, Copy and
- * Delete. `room` decides what the main action does.
+ * My gates as a popover: every saved gate, with Apply (Add in the lab, Pick in the Circuit Lab), Edit,
+ * Pin, Copy and Delete. `room` decides what the main action does.
  */
-export function MyGatesButton({ room }: { room: "sphere" | "lab" }) {
+export function MyGatesButton({ room }: { room: "sphere" | "lab" | "circuit" }) {
   const count = useLibrary((s) => s.gates.length);
   return (
     <Popover
@@ -39,7 +45,7 @@ export function MyGatesButton({ room }: { room: "sphere" | "lab" }) {
   );
 }
 
-function MyGatesList({ room, close }: { room: "sphere" | "lab"; close: () => void }) {
+function MyGatesList({ room, close }: { room: "sphere" | "lab" | "circuit"; close: () => void }) {
   const gates = useLibrary((s) => s.gates);
   const deleted = useLibrary((s) => s.deleted);
   const { setPinned, duplicate, remove, restore } = useLibrary.getState();
@@ -84,7 +90,7 @@ function MyGatesList({ room, close }: { room: "sphere" | "lab"; close: () => voi
               >
                 Apply
               </button>
-            ) : (
+            ) : room === "lab" ? (
               <button
                 type="button"
                 className="button-small button-accent"
@@ -94,6 +100,18 @@ function MyGatesList({ room, close }: { room: "sphere" | "lab"; close: () => voi
                 }}
               >
                 Add
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="button-small button-accent"
+                title="Pick it, then click the wires to place it"
+                onClick={() => {
+                  useCircuit.getState().arm(savedItem(g));
+                  close();
+                }}
+              >
+                Pick
               </button>
             )}
             <button
