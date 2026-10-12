@@ -16,6 +16,9 @@ const NAMES: Record<string, { name: string; also?: string }> = {
   "S†": { name: "S-dagger", also: "undoes S" },
   "T†": { name: "T-dagger", also: "undoes T" },
   "√X": { name: "Square root of X", also: "√NOT" },
+  CNOT: { name: "Controlled-NOT", also: "CX" },
+  CZ: { name: "Controlled-Z" },
+  SWAP: { name: "SWAP" },
 };
 
 /** "Pauli-X" for "X", "X-rotation" for "Rx(45°)", or null for a symbol without a standard name. */
@@ -28,7 +31,7 @@ export function gateName(symbol: string): string | null {
 }
 
 /** What it's also called, if it has a common nickname: "the quantum NOT" for X. */
-function gateNickname(symbol: string): string | null {
+export function gateNickname(symbol: string): string | null {
   return NAMES[symbol]?.also ?? null;
 }
 

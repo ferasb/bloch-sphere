@@ -991,7 +991,8 @@ input[type="checkbox"] {
 /* --- My gates popover --------------------------------------------------------------------------- */
 
 #my-gates-sphere,
-#my-gates-lab {
+#my-gates-lab,
+#my-gates-circuit {
   width: 540px;
 }
 
@@ -1251,4 +1252,435 @@ input[type="checkbox"] {
   *::after {
     transition: none !important;
   }
+}
+
+/* --- Circuit Lab (design-gates.md §4.2) -------------------------------------------------------- */
+
+.circuit-room {
+  position: relative;
+}
+
+.circuit-palette {
+  padding: 12px 16px 0;
+}
+
+.palette-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.circuit-palette .toolbar-divider,
+.circuit-bar .toolbar-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border-muted);
+}
+
+.gate-buttons-wide button {
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: 14px;
+}
+
+/* A picked palette item: clicks on the circuit place copies of it. */
+.circuit-palette button[aria-pressed="true"],
+.circuit-palette button.picked {
+  border-color: var(--secondary);
+  background: var(--border-muted);
+  color: var(--secondary);
+}
+
+.palette-hint {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.palette-hint strong {
+  color: var(--secondary);
+}
+
+.circuit-area {
+  flex: 1;
+  min-height: 0;
+  padding: 24px 16px 16px;
+  overflow: auto;
+}
+
+/* The circuit: everything inside is placed in px from the grid geometry in CircuitCanvas. */
+.circuit-grid {
+  position: relative;
+  outline: none;
+  user-select: none;
+}
+
+.circuit-grid.armed {
+  cursor: copy;
+}
+
+.wire-head {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+}
+
+.wire-head .ket-button {
+  min-width: 44px;
+  font-family: var(--font-math);
+  font-size: 15px;
+}
+
+.wire-remove {
+  padding: 0 6px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.wire-line {
+  position: absolute;
+  height: 1px;
+  background: var(--border);
+}
+
+.wire-end {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  font: 15px var(--font-math);
+  white-space: nowrap;
+}
+
+/* Classical bits: a double line under the wires, with a double line down from each meter. */
+.bit-line {
+  position: absolute;
+  height: 4px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.measure-line {
+  position: absolute;
+  width: 4px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.drop-indicator {
+  position: absolute;
+  border: 1.5px dashed var(--secondary);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.cursor-cell {
+  position: absolute;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.circuit-grid:focus .cursor-cell {
+  border-color: var(--highlight);
+}
+
+.cgate {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-light);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: grab;
+  touch-action: none;
+}
+
+.cgate-long {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cgate.selected,
+.cgate.selected:hover:not(:disabled) {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.two-line {
+  position: absolute;
+  width: 2px;
+  background: var(--text-muted);
+  cursor: grab;
+}
+
+.two-line.selected {
+  background: var(--primary);
+}
+
+.two-end {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+}
+
+.two-end.control-dot,
+.two-end.control-dot:hover:not(:disabled) {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+/* ⊕: a ring with a cross, drawn rather than typed so it stays centered. */
+.two-end.target-plus,
+.two-end.target-plus:hover:not(:disabled) {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  background: var(--scene-bg);
+}
+
+.two-end.target-plus::before,
+.two-end.target-plus::after {
+  content: "";
+  position: absolute;
+  background: var(--text);
+}
+
+.two-end.target-plus::before {
+  width: 2px;
+  height: 100%;
+}
+
+.two-end.target-plus::after {
+  width: 100%;
+  height: 2px;
+}
+
+.two-end.swap-x,
+.two-end.swap-x:hover:not(:disabled) {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.two-end.control-dot.selected {
+  background: var(--primary);
+}
+
+.two-end.target-plus.selected {
+  border-color: var(--primary);
+}
+
+.two-end.target-plus.selected::before,
+.two-end.target-plus.selected::after {
+  background: var(--primary);
+}
+
+.two-end.swap-x.selected {
+  color: var(--primary);
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--secondary);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.playhead-handle {
+  position: absolute;
+  top: -14px;
+  left: -7px;
+  width: 16px;
+  height: 14px;
+  background: var(--secondary);
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 50% 100%, 0 50%);
+  cursor: ew-resize;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.add-wire {
+  margin-top: 12px;
+}
+
+.circuit-notice {
+  bottom: 20px;
+}
+
+/* The sidebar: the sphere stays put; the explanations under it scroll. */
+.circuit-panel {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.circuit-sphere {
+  position: relative;
+  flex: none;
+  height: 270px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--scene-bg);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.circuit-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  padding: 14px 18px;
+  overflow-y: auto;
+}
+
+.captions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.caption-two {
+  padding-left: 8px;
+  border-left: 3px solid var(--info);
+}
+
+.joint-state {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 10px 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.joint-state li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.joint-label {
+  font: 14px var(--font-math);
+}
+
+.joint-value {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.op-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.op-actions .field input {
+  width: 72px;
+}
+
+.histogram {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.histogram li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 96px;
+  align-items: center;
+  gap: 8px;
+}
+
+.histogram-label {
+  font: 14px var(--font-math);
+}
+
+.histogram-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--bg-light);
+}
+
+.histogram-fill {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+}
+
+.histogram-value {
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.playback {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.playback button {
+  min-width: 34px;
+}
+
+.playback-position {
+  min-width: 112px;
+  margin-left: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.circuit-bar .field input {
+  width: 150px;
+}
+
+#my-circuits {
+  width: 480px;
+}
+
+.new-circuit {
+  margin-bottom: 12px;
+}
+
+.gate-row.circuit-row {
+  grid-template-columns: minmax(0, 1fr) auto;
 }
