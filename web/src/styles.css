@@ -2,9 +2,9 @@
   /* Colors come from theme.css, the palette shared with ferasbisharat.com. These build on it. */
 
   /* Qubits: the palette's five accents, in its fixed order (validated as a set there). */
-  --qubit-1: var(--accent-1); /* amber */
+  --qubit-1: var(--accent-1); /* green */
   --qubit-2: var(--accent-2); /* violet */
-  --qubit-3: var(--accent-3); /* green */
+  --qubit-3: var(--accent-3); /* amber */
   --qubit-4: var(--accent-4); /* cyan */
   --qubit-5: var(--accent-5); /* pink */
 

@@ -37,17 +37,18 @@
   --info: light-dark(oklch(0.52 0.09 220), oklch(0.76 0.09 220));
 
   /*
-   * Five colors for telling things apart (Bloch Sphere's qubits), in this fixed order: amber, violet,
-   * green, cyan, pink. Each theme's five are validated as a set, for every pair, by OKLab distance
+   * Five colors for telling things apart (Bloch Sphere's qubits), in this fixed order: green, violet,
+   * amber, cyan, pink. Each theme's five are validated as a set, for every pair, by OKLab distance
    * (x100) under protan/deutan simulation (Machado 2009) and for normal vision:
    *   dark: worst pair 11.1 (deutan), 20.5 (normal); at least 4.7:1 on the dark page.
    *   light: worst pair 11.1 (deutan), 20.8 (normal); at least 3:1 on the light page and --bg-sunken.
-   * Lightness alternates on purpose; it is the cue that survives color blindness. The hues stay the
-   * same in both themes, so the first color is amber in either.
+   * The first two (seen together most) are at least 19.7 apart under simulation. Lightness varies
+   * across the set on purpose; it is the cue that survives color blindness. The hues stay the same
+   * in both themes, so the first color is green in either.
    */
-  --accent-1: light-dark(oklch(0.6 0.125 75), oklch(0.82 0.15 75));
+  --accent-1: light-dark(oklch(0.4 0.11 150), oklch(0.6 0.15 150));
   --accent-2: light-dark(oklch(0.4 0.17 295), oklch(0.6 0.15 295));
-  --accent-3: light-dark(oklch(0.4 0.11 150), oklch(0.6 0.15 150));
+  --accent-3: light-dark(oklch(0.6 0.125 75), oklch(0.82 0.15 75));
   --accent-4: light-dark(oklch(0.62 0.11 215), oklch(0.82 0.141 215));
   --accent-5: light-dark(oklch(0.52 0.17 355), oklch(0.74 0.15 355));
 
