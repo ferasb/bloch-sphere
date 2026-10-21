@@ -1,5 +1,6 @@
 import { Color, SRGBColorSpace } from "three";
-import { useTheme, type Scheme } from "./theme";
+import type { Theme } from "../persist/theme";
+import { useTheme } from "./theme";
 
 let ctx: CanvasRenderingContext2D | null = null;
 let probe: HTMLElement | null = null;
@@ -35,14 +36,14 @@ export interface ScenePalette {
   qubits: Color[];
 }
 
-const palettes: Partial<Record<Scheme, ScenePalette>> = {};
+const palettes: Partial<Record<Theme, ScenePalette>> = {};
 
 /**
  * The 3D scene's colors in the current theme, read once per theme. The scene rebuilds when the
  * theme changes (Scene.tsx), so components just call this while rendering.
  */
 export function scenePalette(): ScenePalette {
-  return (palettes[useTheme.getState().scheme] ??= {
+  return (palettes[useTheme.getState().theme] ??= {
     background: cssColor("--scene-bg"),
     sphere: cssColor("--sphere"),
     sphereLine: cssColor("--sphere-line"),

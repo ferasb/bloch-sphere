@@ -1,46 +1,45 @@
 import { create } from "zustand";
-import { loadTheme, onThemeChangedElsewhere, saveTheme, type ThemeChoice } from "../persist/theme";
-
-/** The colors in use: the visitor's choice, or the system's when they chose "system". */
-export type Scheme = "light" | "dark";
+import { loadTheme, onThemeChangedElsewhere, saveTheme, type Theme } from "../persist/theme";
 
 interface ThemeState {
-  choice: ThemeChoice;
-  scheme: Scheme;
-  choose(choice: ThemeChoice): void;
+  /** The colors in use: the visitor's pick, or the system's until they pick one. */
+  theme: Theme;
+  /** Switch to the other theme, and remember it. */
+  toggle(): void;
 }
 
 const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+let picked = loadTheme();
 
-function schemeFor(choice: ThemeChoice): Scheme {
-  return choice === "system" ? (systemDark.matches ? "dark" : "light") : choice;
+function current(): Theme {
+  return picked ?? (systemDark.matches ? "dark" : "light");
 }
 
-/** theme.css reads data-theme on <html>; without it, the system's scheme applies. */
-function apply(choice: ThemeChoice): void {
-  if (choice === "system") {
-    delete document.documentElement.dataset.theme;
+/** theme.css reads data-theme on <html>; without it, the system's theme applies. */
+function apply(): void {
+  if (picked) {
+    document.documentElement.dataset.theme = picked;
   } else {
-    document.documentElement.dataset.theme = choice;
+    delete document.documentElement.dataset.theme;
   }
 }
 
-const initial = loadTheme();
-apply(initial);
+apply();
 
-/** The color theme (design.md §8). Set data-theme before the state, so readers of the new state see the new colors. */
+/** The color theme (design.md §8). data-theme changes before the state, so readers of the new state see the new colors. */
 export const useTheme = create<ThemeState>((set) => ({
-  choice: initial,
-  scheme: schemeFor(initial),
-  choose(choice) {
-    saveTheme(choice);
-    apply(choice);
-    set({ choice, scheme: schemeFor(choice) });
+  theme: current(),
+  toggle() {
+    picked = current() === "dark" ? "light" : "dark";
+    saveTheme(picked);
+    apply();
+    set({ theme: picked });
   },
 }));
 
-systemDark.addEventListener("change", () => useTheme.setState((s) => ({ scheme: schemeFor(s.choice) })));
-onThemeChangedElsewhere((choice) => {
-  apply(choice);
-  useTheme.setState({ choice, scheme: schemeFor(choice) });
+systemDark.addEventListener("change", () => useTheme.setState({ theme: current() }));
+onThemeChangedElsewhere((theme) => {
+  picked = theme;
+  apply();
+  useTheme.setState({ theme: current() });
 });

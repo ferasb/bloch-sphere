@@ -30,7 +30,7 @@ interface SceneProps {
 /** A 3D Bloch sphere. Draws the source's frame at its playhead; holds no state of its own. */
 export function Scene({ source, children, stepAxis = "always" }: SceneProps) {
   const overlay = useMemo(() => new OverlayRegistry(), []);
-  const scheme = useTheme((s) => s.scheme);
+  const theme = useTheme((s) => s.theme);
   return (
     <SceneSourceContext.Provider value={source}>
       <OverlayContext.Provider value={overlay}>
@@ -42,7 +42,7 @@ export function Scene({ source, children, stepAxis = "always" }: SceneProps) {
         >
           {/* Rebuilt when the theme changes, so every object takes its colors from the new palette.
               The camera and its controls stay, so the view doesn't jump. */}
-          <group key={scheme}>
+          <group key={theme}>
             <Setup />
             <SphereShell />
             <RotationAxis whilePlayingOnly={stepAxis === "while-playing"} />

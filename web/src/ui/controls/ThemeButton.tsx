@@ -1,18 +1,9 @@
 import type { ReactNode } from "react";
-import type { ThemeChoice } from "../../persist/theme";
+import type { Theme } from "../../persist/theme";
 import { useTheme } from "../theme";
 
-const NEXT: Record<ThemeChoice, ThemeChoice> = { system: "light", light: "dark", dark: "system" };
-const NAMES: Record<ThemeChoice, string> = { system: "match the system", light: "light", dark: "dark" };
-
 // Drawn on a 24-unit grid; stroked in the button's text color by .theme-button svg.
-const ICONS: Record<ThemeChoice, ReactNode> = {
-  system: (
-    <>
-      <rect x="3" y="4" width="18" height="12" rx="2" />
-      <path d="M8 20h8M12 16v4" />
-    </>
-  ),
+const ICONS: Record<Theme, ReactNode> = {
   light: (
     <>
       <circle cx="12" cy="12" r="4" />
@@ -22,18 +13,16 @@ const ICONS: Record<ThemeChoice, ReactNode> = {
   dark: <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />,
 };
 
-/**
- * The color theme (design.md §8): shows the current choice and steps through match the system,
- * light and dark. One button, so it fits beside the room switcher and the links.
- */
+/** Light or dark (design.md §8). Shows the theme it switches to: the moon in light, the sun in dark. */
 export function ThemeButton() {
-  const choice = useTheme((s) => s.choice);
-  const choose = useTheme((s) => s.choose);
-  const label = `Theme: ${NAMES[choice]}. Click for ${NAMES[NEXT[choice]]}.`;
+  const theme = useTheme((s) => s.theme);
+  const toggle = useTheme((s) => s.toggle);
+  const next: Theme = theme === "dark" ? "light" : "dark";
+  const label = `Switch to the ${next} theme`;
   return (
-    <button type="button" className="theme-button" aria-label={label} title={label} onClick={() => choose(NEXT[choice])}>
+    <button type="button" className="theme-button" aria-label={label} title={label} onClick={toggle}>
       <svg viewBox="0 0 24 24" aria-hidden>
-        {ICONS[choice]}
+        {ICONS[next]}
       </svg>
     </button>
   );
