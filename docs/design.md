@@ -66,6 +66,7 @@ web/src/
 ├── format/    exact values (1/√2, e^{iπ/4}), angles,
 │              captions ("S: 90° about z …")        pure functions, tested
 ├── persist/   URL hash, sessionStorage, localStorage
+├── learn/     the Learn pages: static HTML built from React and the math (section 13)
 └── ui/
     ├── App.tsx, layout, keyboard shortcuts
     ├── store.ts  the Sphere plus view state (section 4.4), in Zustand
@@ -82,11 +83,13 @@ ui ──► model ──► math
  │       ▲
  ├──► format ──► math
  └──► persist ──► model
+
+learn ──► format, model, math, persist (the theme)
 ```
 
 - `math/` imports nothing of ours.
 - `model/` imports only `math/`. It never imports React, three.js or the DOM, so it runs in Vitest as-is.
-- Nothing imports `ui/`.
+- Nothing imports `ui/` or `learn/`. The app reaches the Learn pages by link only, through paths in `format/` (`gateLearnPath`, the glossary).
 
 ### 4.3 The model
 
@@ -306,12 +309,12 @@ Ideas beyond the panels above, with a rough sense of value for a beginner and th
 | **Whole-sphere rotation** | A sphere covered in ~200 colored dots (or latitude bands). Apply a gate and *everything* turns rigidly. | High. Shows a gate is a rotation of all states, not something done to your one arrow. | M |
 | **Gate wind** | Small arrows on the surface showing which way each point would flow under the gate's rotation, like a wind map. | High. The axis and direction are visible before anything moves. | M |
 | **Predict mode** | Before the animation, you click where you think the arrow will land. Then it plays, and the gap is shown. | High. Active recall instead of watching. | S |
-| **Challenges** | "Get from \|0⟩ to \|−i⟩ using only H and S." The target is a ghost arrow; fewer gates earn more stars. | High. Fun, and builds gate intuition fast. | M |
+| **Challenges** *(built, section 13.4)* | "Get from \|0⟩ to \|−i⟩ using only H and S." The target is a ghost arrow; fewer gates earn more stars. | High. Fun, and builds gate intuition fast. | M |
 | **Guided lessons** *(later; not planned yet)* | Short interactive steps (what is a qubit, superposition, phase, H, measurement), each with a check ("apply a gate that takes \|0⟩ to \|1⟩"). | High, but content-heavy. | L |
 | **Hidden-arrow game** | The arrow is hidden. Measure copies in X, Y and Z to estimate it, then reveal. | Medium-high. Teaches that the state can't be seen directly, only estimated from measurements. | M |
 | **Generated captions** | "What just happened" sentences built from the math, including the surprising cases (S on \|0⟩: nothing moves). | High. | S |
 | **Exact-value recognizer** | Shows 1/√2 and e^{iπ/4} instead of decimals, everywhere. | High. | S |
-| **Glossary popovers** | Hover "phase", "basis", "global phase" for a one-line definition with a mini picture. | Medium. | S |
+| **Glossary popovers** *(built without pictures, section 13.3)* | Hover "phase", "basis", "global phase" for a one-line definition with a mini picture. | Medium. | S |
 | **Clip export** | Save a replay as a video. | Medium (teachers, notes). | S |
 
 **My top picks for beginner impact:** gate preview, circle notation linked to the sphere, the probability ruler, whole-sphere rotation, and the shots histogram. Each one turns an abstract statement into something you can watch.
@@ -320,7 +323,7 @@ Ideas beyond the panels above, with a rough sense of value for a beginner and th
 
 ## 8. Visual language
 
-- **Color tokens** are OKLCH. The palette (surfaces, text, lines, accents, status, five accent colors) is `web/src/theme.css`, a copy of the one shared with [ferasbisharat.com](https://ferasbisharat.com) (`ferasb.github.io/theme.css`, the original). `web/src/styles.css` builds this site's tokens on it: the qubits, the 3D scene. The 3D scene reads them through `ui/palette.ts`, so there's one source of truth.
+- **Color tokens** are OKLCH. The palette (surfaces, text, lines, accents, status, five accent colors) is `web/src/theme.css`, a copy of the one shared with [ferasbisharat.com](https://ferasbisharat.com) (`ferasb.github.io/theme.css`, the original). `web/src/tokens.css` builds this site's tokens on it (the qubits, the 3D scene, the fonts), shared by the app's `styles.css` and the Learn pages' `learn/learn.css`. The 3D scene reads them through `ui/palette.ts`, so there's one source of truth.
 - **Light and dark.** Every palette token is a `light-dark(light, dark)` pair. The site follows the system's theme until the visitor picks one with the theme button in the top bar (it switches between light and dark); the pick is kept in `localStorage` (`persist/theme.ts`). A pick sets `data-theme` on `<html>`, which `theme.css` reads; `public/theme-init.js` sets it before the first paint, on the app and on the About and Privacy pages. When the theme changes, the 3D scene rebuilds its objects with the new palette (`Scene.tsx`); the camera stays.
 - **Qubit colors** (`--qubit-1` … `--qubit-5`, the palette's five accents) are validated as a set in each theme, by OKLab distance under protanopia and deuteranopia simulation: worst pair 11.1 for both themes, and 20.5 (dark) and 20.8 (light) for normal vision. The hues are the same in both themes, so q1 is green in either (and q2 violet: the pair seen together most stays at least 19.7 apart under simulation). In dark they're brighter than the usual chart range on purpose, because they're thin arrows on near-black; in light they're darker, at least 3:1 against the page and the 3D view.
 - **Identity is never color alone.** With two or more qubits, each arrow tip carries its name (q1, q2).
@@ -336,7 +339,7 @@ Ideas beyond the panels above, with a rough sense of value for a beginner and th
 ## 9. One tab, one instance
 
 - **The tab is the session.** State lives in memory, mirrored to `sessionStorage` (which is per tab), so reloading a tab keeps its journey. Two tabs are two independent sessions; they don't sync.
-- **The URL can carry the journey.** "Share" encodes the actions (not snapshots) into the URL hash, compressed. Opening the link replays the journey. Duplicating a tab duplicates the session.
+- **The URL can carry the journey.** "Share" encodes the actions (not snapshots) into the URL hash, compressed. Opening the link replays the journey. Duplicating a tab duplicates the session. *(Not built yet; readable links that set up a start and a few gates are, section 13.2.)*
 - **Shared across tabs, in `localStorage`:** saved journeys, preferences, and panel sizes.
 - **No backend.** Nothing leaves the browser except the links a user chooses to share.
 
@@ -361,11 +364,12 @@ Each phase ends with a working, deployable site.
 0. **Restructure, no new features** *(done)*. Move to React + R3F + Zustand. Build `model/Sphere` with the journey (apply, undo, reset). Port today's features onto it: gates, animation, caption, reset. Set up deployment.
 1. **The core loop (P1)** *(done)*: State panel (ket, vector, circle notation, probabilities, angles), Gate panel (matrix widget, rotation), qubits (add/remove/select, presets, sliders, amplitudes), gate preview, apply to all, journey chips with undo and reset, trail on the sphere, keyboard shortcuts.
 2. **Understanding (P2):** scrubber and replay, step inspector with step-by-step multiplication, linked highlighting, angle arcs, probability ruler, camera presets, measurement and shots, rotation gates, other-basis probabilities, global-phase toggle, overlap between qubits, shortcut arc, save/load.
-3. **Engagement (P3):** challenges, predict mode, whole-sphere rotation, gate wind, share links, compare, custom gate, clip export.
+3. **Engagement (P3):** challenges *(done, section 13.4)*, predict mode, whole-sphere rotation, gate wind, share links, compare, custom gate, clip export.
+4. **Learning and search** *(done, 2026-10-22)*: the Learn pages, readable links, terms in the app, and the search basics (section 13).
 
 **Next: gates.** Phases G0 → G1 → G2 → C1 in `design-gates.md` §7, requested as the next priority on 2026-10-10. G0 and G1 (the Gate Lab) are done; P2 items interleave from here. The Circuit Lab is a separate project (2026-10-12).
 
-**Later, not planned yet:** guided lessons.
+**Later, not planned yet:** guided lessons (interactive steps with checks, inside the app). The Learn pages are reading guides; they link into the app but don't check anything.
 
 ---
 
@@ -391,6 +395,49 @@ Each phase ends with a working, deployable site.
 | 2026-10-11 | **The Circuit Lab starts with two-qubit gates (CNOT, CZ, SWAP),** so entanglement is no longer deferred there; the Sphere room's qubits stay independent for now. **Gates are described by their standard names** (Pauli-X, Hadamard, …). |
 | 2026-10-12 | **The Circuit Lab becomes its own project.** This site stays about the Bloch sphere: independent qubits, the Gate Lab, and the journey shown as a circuit. The circuit work is parked on the `circuit-lab` branch. Details in `design-gates.md` §4.2 and §8. |
 | 2026-10-12 | **Set state isn't a step; it starts a new journey.** The current states become the new start, with the chosen qubit (or all) at the new state; the other qubits stay where they are. **Reset** still puts every qubit at |0⟩. Adding and removing qubits stay steps for now, to revisit after trying this. |
+| 2026-10-22 | **Learn pages: static guides built from React and the app's math** (section 13.1). Separate pages, since the app has no page scroll; no framework change and no pre-rendering of the app. |
+| 2026-10-22 | **Readable links** for Try it (section 13.2), separate from Share. |
+| 2026-10-22 | **Challenges are a mode of the Sphere room** (section 13.4); the store enforces the allowed gates. |
+| 2026-10-22 | **Terms explain the app's labels** (section 13.3); one glossary for the app and the Learn hub. |
+| 2026-10-22 | **Search basics, no analytics** (section 13.5). |
+
+---
+
+## 13. Learning and search
+
+Added 2026-10-22. The app shows what happens; these explain why, and let people find the site.
+
+### 13.1 The Learn pages
+
+- **What:** short guides at `/learn/`: what a qubit is, the Bloch sphere (θ, φ, the Bloch vector, global phase), the six key states, measurement, gates as rotations, one page per gate (Pauli-X, Y, Z, Hadamard, S and T, rotation gates), and the Gate Lab. The hub lists them in reading order with the glossary (13.3); each page has Previous and Next.
+- **Each page:** plain words first, then a picture, then "the math", then Try it links into the app (13.2). Beginner language must not become wrong: no "0 and 1 at once"; orthogonal states are opposite points; global phase is invisible; one qubit only.
+- **Separate pages, not text under the sphere.** The app fills the window with no page scroll (section 5), so the guides are pages of their own, readable without JavaScript, which is also what search engines need.
+- **Static HTML, built from React** (`src/learn/`, rendered with `renderToStaticMarkup` when the site is built, by `plugins/learnPages.ts`). Each page is one more HTML entry of the Vite build, so it gets the CSP and its own small stylesheet and script (the theme button), and the dev server renders the pages on request. No framework change: the app stays a client-side React app. Pre-rendering the app itself was not done: its visible text is mostly numbers and buttons, and it would risk a flash when the app takes over.
+- **The numbers come from the app's math.** Matrices, "as a rotation" equations with their global phase, the tables of what each gate does to the six key states (`format/gateFacts.ts`), and the pictures (`learn/figure.tsx`: SVG spheres drawn from the same math, seen from the app's starting camera, colored by the theme tokens) are computed when the site is built, so they can't disagree with the sphere. Facts the prose states by hand are checked in `learn/claims.test.ts`. KaTeX runs with `throwOnError` and `strict`, so a typo in a formula fails the build.
+- **Tests** (`learn/learn.test.ts`): every page renders, has one h1, a canonical URL and breadcrumbs, a title of at most 60 characters and a description of at most 155; every link leads to a page that exists; every Try it link parses.
+
+### 13.2 Readable links
+
+`model/link.ts`: links that open the site set up, short enough to read and type. `#/?start=0,+&gates=H,Sdg,Rx(90)` starts a new journey with those qubits and plays the gates on all of them; `#/lab?start=+&gates=H,T,H` opens the Gate Lab with those tiles. States are `0 1 + - +i -i` or `θ:φ` in degrees. Opening one replaces the journey (with Restore) and tidies the URL to `#/` or `#/lab`, so a reload doesn't replay it. Links are untrusted, so parsing validates everything, and an invalid one opens the site as usual. Share (section 9) will carry whole journeys; these carry a start and a few gates.
+
+### 13.3 In the app
+
+- **"Learn the basics ›"** at the start of the top bar, and **"About the … gate ›"** in the Gate panel (`format/gateNames.ts`, `gateLearnPath`).
+- **Terms** (`ui/widgets/Term.tsx`): labels such as State, vector, circle notation, P(0), θ, φ, (x, y, z), Gate and "Rotates the sphere" open a one-line definition and a link to the guide that says more. The definitions live in `format/glossary.ts` and are also listed on the Learn hub. The popover renders at the end of the page, since labels sit in headings and paragraphs.
+
+### 13.4 Challenges
+
+- **The rules** (`model/challenges.ts`): get q1 from one axis state to another using only some gates, in as few as you can. Eight, from one gate ("Flip it") to six ("The long way round"). A test finds the fewest gates for each by search and checks them against the stated par. Three stars at par, two within two more, one otherwise.
+- **A mode of the Sphere room,** not a room: the store keeps which challenge is on. Starting one starts a new journey with q1 alone at the start (Restore brings the old journey back). While it's on, the store accepts only the challenge's gates (so keyboard shortcuts, My gates and the Gate Lab's Apply can't get around it); the gate bar disables the rest and hides R(θ) and pinned gates; + Qubit and Set state are hidden; Reset starts the attempt over.
+- **On screen:** a card over the sphere with the goal, gates used, the par, a hint and Start over, and once solved, the stars and Next challenge; a ring and a faint arrow on the sphere mark the goal (`scene/TargetMarker.tsx`, passed to the scene as one of the room's layers). Challenges ▾ at the end of the qubit strip lists them with the stars earned.
+- **Saved:** the best stars per challenge in `localStorage` (the privacy page says so); the challenge in progress in `sessionStorage`, with the journey.
+
+### 13.5 Search
+
+- **Home page head:** a descriptive title, description, canonical URL, Open Graph and Twitter tags with a 1200×630 picture (`public/og.png`), and schema.org `WebApplication` data (a JSON block, never run, so the CSP doesn't apply). The Learn pages have their own titles, descriptions, canonical URLs and `BreadcrumbList` data.
+- **Without JavaScript,** `index.html` shows what the site is and links to the guides, in the app's own grid and top bar, so the title doesn't move when the app replaces it. It fades in only after a moment, so a quick load doesn't flash it.
+- **`robots.txt` and `sitemap.xml`** (the sitemap is written by the build from the page list). No `lastmod`: the build can't know when a page last changed, and a wrong date is worse than none.
+- **No analytics,** as before. Google Search Console, once set up for the domain, shows search traffic without adding anything to the site.
 
 ---
 

@@ -1,6 +1,6 @@
 # Bloch Sphere
 
-An interactive Bloch sphere for students meeting quantum computing for the first time. Apply gates to qubits and watch their states rotate, see every state and gate as exact numbers, and build your own gates in the Gate Lab.
+An interactive Bloch sphere for students meeting quantum computing for the first time, live at [bloch-sphere.ferasbisharat.com](https://bloch-sphere.ferasbisharat.com). Apply gates to qubits and watch their states rotate, see every state and gate as exact numbers, and build your own gates in the Gate Lab.
 
 ![The Sphere room: two qubits on the Bloch sphere, their journey along the bottom, and the state and gate panels on the right](docs/screenshot.png)
 
@@ -12,6 +12,8 @@ An interactive Bloch sphere for students meeting quantum computing for the first
 - **See the gate as a matrix and as a rotation:** "Rotates the sphere 45° about z."
 - **Replay the journey.** Every gate is a step: click a step to replay to it, undo the last one, or reset.
 - **Build gates in the Gate Lab.** Combine gates and see the single rotation they add up to (H·T·H is 45° about x), undo them (U†), repeat them, take fractions (√X), and check whether order matters. Save your gates and use them on the sphere.
+- **Play challenges.** Get a qubit to a goal using only some gates, in as few as you can.
+- **Learn the basics.** [Guides](https://bloch-sphere.ferasbisharat.com/learn/) to qubits, the Bloch sphere, measurement and every gate, in plain words first, with links that set up the sphere to try each idea. In the app, click a label such as θ or "vector" for a short definition.
 
 It's made for desktop browsers, in light or dark: it follows your system until you switch with the theme button in the top bar. Keyboard: X, Y, Z, H, S, T apply gates (Shift+S and Shift+T for S† and T†), 1–5 select a qubit, A applies to all, Ctrl+Z undoes.
 
@@ -39,6 +41,7 @@ web/src/
 ├── model/     the journey (Sphere) and the Gate Lab's bench, as plain TypeScript
 ├── format/    exact values, angles and captions as text and LaTeX
 ├── persist/   browser storage, validated on load
+├── learn/     the Learn pages, rendered to static HTML when the site is built
 └── ui/        React: the two rooms, the 3D scene, panels and widgets
 ```
 

@@ -40,6 +40,8 @@ export function MyGatesButton({ room }: { room: "sphere" | "lab" }) {
 }
 
 function MyGatesList({ room, close }: { room: "sphere" | "lab"; close: () => void }) {
+  // A challenge on the sphere allows only its own gates.
+  const inChallenge = useApp((s) => s.challenge !== null);
   const gates = useLibrary((s) => s.gates);
   const deleted = useLibrary((s) => s.deleted);
   const { setPinned, duplicate, remove, restore } = useLibrary.getState();
@@ -77,6 +79,8 @@ function MyGatesList({ room, close }: { room: "sphere" | "lab"; close: () => voi
               <button
                 type="button"
                 className="button-small button-accent"
+                disabled={inChallenge}
+                title={inChallenge ? "Not during a challenge: it allows only its own gates" : undefined}
                 onClick={() => {
                   useApp.getState().applyGate(savedGateSpec(g));
                   close();

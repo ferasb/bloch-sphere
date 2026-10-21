@@ -24,9 +24,12 @@ export function stateText(q: Qubit): string {
   return stateName(q) ?? `θ ${degreesText(theta)} · φ ${degreesText(phi)}`;
 }
 
-/** α|0⟩ + β|1⟩ as LaTeX, in canonical phase, signs folded into the operators. */
-export function ketTex(q: Qubit): string {
-  const { a, b } = canonical(q);
+/**
+ * α|0⟩ + β|1⟩ as LaTeX, signs folded into the operators: in canonical phase, or with `keepPhase` as
+ * the amplitudes stand (for an equation like T|−i⟩ = …, which must hold exactly).
+ */
+export function ketTex(q: Qubit, keepPhase = false): string {
+  const { a, b } = keepPhase ? q : canonical(q);
   const terms = [
     [a, "|0\\rangle"],
     [b, "|1\\rangle"],

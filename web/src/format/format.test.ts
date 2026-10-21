@@ -3,6 +3,7 @@ import { Complex } from "../math/complex";
 import { Gate } from "../math/gate";
 import { Qubit } from "../math/qubit";
 import { coordinateText, degreesText, percentText } from "./angles";
+import { gateLearnPath, gateListText } from "./gateNames";
 import { complexTexSigned } from "./exact";
 import { canonical, columnTex, ketTex, stateName, stateText } from "./ket";
 import { parseComplex } from "./parse";
@@ -109,5 +110,20 @@ describe("parseComplex", () => {
 
   it.each(["", "abc", "1/2", "sqrt(2)", "1e999", "nan", "Infinity", "2+", "i i", "alert(1)"])("rejects %j", (text) => {
     expect(parseComplex(text)).toBeNull();
+  });
+});
+
+describe("gate names", () => {
+  it("lists gates in words", () => {
+    expect(gateListText(["S"])).toBe("S");
+    expect(gateListText(["H", "S"])).toBe("H and S");
+    expect(gateListText(["X", "Y", "Z", "H"], "or")).toBe("X, Y, Z or H");
+  });
+
+  it("points each gate to its Learn page", () => {
+    expect(gateLearnPath("H")).toBe("learn/gates/hadamard/");
+    expect(gateLearnPath("T†")).toBe("learn/gates/s-and-t/");
+    expect(gateLearnPath("Ry(22.5°)")).toBe("learn/gates/rotation-gates/");
+    expect(gateLearnPath("V")).toBeNull();
   });
 });

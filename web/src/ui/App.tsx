@@ -1,3 +1,4 @@
+import { ChallengeCard, ChallengeTarget } from "./controls/Challenges";
 import { GateToolbar } from "./controls/GateToolbar";
 import { QubitStrip } from "./controls/QubitStrip";
 import { ThemeButton } from "./controls/ThemeButton";
@@ -28,6 +29,9 @@ export function App() {
   return (
     <div className="app">
       <header className="topbar">
+        <a className="topbar-learn" href="learn/">
+          Learn the basics ›
+        </a>
         <div className="topbar-title">
           <h1>Bloch Sphere</h1>
           <p>Apply gates to qubits and watch their states rotate.</p>
@@ -65,7 +69,10 @@ function SphereRoom() {
       <main className="scene" aria-label="Bloch sphere">
         <QubitStrip />
         <div className="viewport">
-          <Scene source={journeySource} />
+          <Scene source={journeySource}>
+            <ChallengeTarget />
+          </Scene>
+          <ChallengeCard />
           <p className="scene-hint">Drag to rotate · Scroll to zoom</p>
           <RestoreNotice />
           <LibraryNotice />

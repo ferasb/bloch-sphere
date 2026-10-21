@@ -20,6 +20,16 @@ interface PopoverProps {
   children: (close: () => void) => ReactNode;
 }
 
+/** Put a popover (position: fixed) next to its button: below or above it, lined up with its left or right edge. */
+export function placeNextTo(button: HTMLElement, popover: HTMLElement, placement: "below" | "above", align: "start" | "end"): void {
+  const r = button.getBoundingClientRect();
+  const style = popover.style;
+  style.top = placement === "below" ? `${r.bottom + 8}px` : "auto";
+  style.bottom = placement === "above" ? `${window.innerHeight - r.top + 8}px` : "auto";
+  style.left = align === "start" ? `${r.left}px` : "auto";
+  style.right = align === "end" ? `${window.innerWidth - r.right}px` : "auto";
+}
+
 /**
  * A button that opens a popover. Uses the browser's popover, which closes on Escape and on a click
  * outside, and positions it next to its button.
@@ -28,15 +38,6 @@ export function Popover({ id, button, buttonClassName, buttonTitle, label, headi
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popover = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-
-  function place() {
-    const r = buttonRef.current!.getBoundingClientRect();
-    const style = popover.current!.style;
-    style.top = placement === "below" ? `${r.bottom + 8}px` : "auto";
-    style.bottom = placement === "above" ? `${window.innerHeight - r.top + 8}px` : "auto";
-    style.left = align === "start" ? `${r.left}px` : "auto";
-    style.right = align === "end" ? `${window.innerWidth - r.right}px` : "auto";
-  }
 
   return (
     <>
@@ -52,7 +53,7 @@ export function Popover({ id, button, buttonClassName, buttonTitle, label, headi
         className="popover"
         onBeforeToggle={(e) => {
           if ((e.nativeEvent as ToggleEvent).newState === "open") {
-            place();
+            placeNextTo(buttonRef.current!, popover.current!, placement, align);
           }
         }}
         onToggle={(e) => {

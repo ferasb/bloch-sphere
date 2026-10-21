@@ -1,0 +1,28 @@
+/*
+ * This site's own tokens, built on theme.css (the palette shared with ferasbisharat.com): the qubits,
+ * the 3D scene, and the fonts. Shared by the app (styles.css) and the Learn pages (learn/learn.css).
+ */
+
+:root {
+  /* Qubits: the palette's five accents, in its fixed order (validated as a set there). */
+  --qubit-1: var(--accent-1); /* green */
+  --qubit-2: var(--accent-2); /* violet */
+  --qubit-3: var(--accent-3); /* amber */
+  --qubit-4: var(--accent-4); /* cyan */
+  --qubit-5: var(--accent-5); /* pink */
+
+  /* 3D scene. The sphere's lines keep about 2.2:1 against the background in both themes. */
+  --scene-bg: var(--bg-sunken);
+  --sphere: light-dark(oklch(0.55 0.08 264), oklch(0.6 0.06 264));
+  --sphere-line: light-dark(oklch(0.72 0.04 264), oklch(0.4 0.05 264));
+  --axis: var(--highlight);
+  --rotation-axis: var(--primary);
+
+  /* The empty part of a probability bar: a gray trough in light, a raised strip in dark. */
+  --track: light-dark(oklch(0.9 0.02 264), oklch(0.2 0.025 264));
+
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The title: a wide face drawn for capitals, set in caps with extra tracking. */
+  --font-display: Michroma, var(--font-ui);
+  --font-math: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+}

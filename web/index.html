@@ -4,22 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="description" content="An interactive Bloch sphere: apply quantum gates to qubits and watch their states rotate. Build your own gates in the Gate Lab." />
+    <title>Bloch Sphere: Interactive 3D Visualizer for Qubits and Gates</title>
+    <meta name="description" content="A free interactive 3D Bloch sphere: apply X, Y, Z, H, S, T and rotation gates to qubits, watch their states turn, and build your own gates." />
+    <link rel="canonical" href="https://bloch-sphere.ferasbisharat.com/" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="oklch(0.985 0.005 264)" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="oklch(0.15 0.025 264)" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Bloch Sphere" />
-    <meta property="og:description" content="An interactive Bloch sphere: apply quantum gates to qubits and watch their states rotate." />
+    <meta property="og:site_name" content="Bloch Sphere" />
+    <meta property="og:title" content="Bloch Sphere: an interactive 3D Bloch sphere" />
+    <meta property="og:description" content="Apply quantum gates to qubits and watch their states rotate. Free, in your browser, with beginner guides." />
+    <meta property="og:url" content="https://bloch-sphere.ferasbisharat.com/" />
+    <meta property="og:image" content="https://bloch-sphere.ferasbisharat.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A Bloch sphere with a qubit's arrow turned by a gate" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <!-- Not a module and not deferred: it applies a chosen theme before the page first paints. -->
-    <script src="theme-init.js"></script>
-    <title>Bloch Sphere</title>
+    <!-- What this is, for search engines (a data block: never run, so the CSP doesn't apply). -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Bloch Sphere",
+        "url": "https://bloch-sphere.ferasbisharat.com/",
+        "description": "An interactive 3D Bloch sphere for beginner quantum computing students: apply gates to qubits, watch their states rotate, and build your own gates.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any (web browser)",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Feras Bisharat", "url": "https://ferasbisharat.com" }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <noscript>Bloch Sphere is an interactive 3D page and needs JavaScript.</noscript>
+    <!-- Shown while the app loads, and to anything that doesn't run JavaScript; the app replaces it.
+         It reuses the app's grid and top bar, so the title doesn't move when the app appears. -->
+    <div id="root">
+      <div class="app">
+        <header class="topbar">
+          <div class="topbar-title">
+            <h1>Bloch Sphere</h1>
+            <p>Apply gates to qubits and watch their states rotate.</p>
+          </div>
+        </header>
+        <main class="boot">
+          <p>
+            An interactive 3D Bloch sphere for students meeting quantum computing for the first time. Apply the X, Y, Z, H, S and T gates, or a
+            rotation by any angle, to up to five qubits; watch each gate turn the sphere; and see every state as a ket, a vector and
+            probabilities. In the Gate Lab, combine gates into your own and see the single rotation they add up to.
+          </p>
+          <p>New to qubits? Start with the guides:</p>
+          <ul>
+            <li><a href="learn/qubit/">What is a qubit?</a></li>
+            <li><a href="learn/bloch-sphere/">What is the Bloch sphere?</a></li>
+            <li><a href="learn/gates/">Gates are rotations</a></li>
+            <li><a href="learn/">All guides</a></li>
+          </ul>
+          <noscript><p>The sphere itself needs JavaScript; the guides don't.</p></noscript>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

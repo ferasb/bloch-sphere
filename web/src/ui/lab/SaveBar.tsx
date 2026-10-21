@@ -17,6 +17,8 @@ export function SaveBar() {
   const editing = useLab((s) => s.editing);
   const editingGate = useLibrary((s) => s.gates.find((g) => g.id === editing));
   const target = useApp((s) => (s.applyToAll ? "all qubits" : (s.sphere.qubit(s.selected)?.name ?? "")));
+  // A challenge on the sphere allows only its own gates.
+  const inChallenge = useApp((s) => s.challenge !== null);
   const { setForm, setEditing } = useLab.getState();
   const [message, setMessage] = useState<string | null>(null);
 
@@ -80,7 +82,13 @@ export function SaveBar() {
         </span>
       )}
       <span className="spacer" />
-      <button type="button" className="button-accent" disabled={tiles.length === 0} onClick={apply} title="Apply this gate on the sphere">
+      <button
+        type="button"
+        className="button-accent"
+        disabled={tiles.length === 0 || inChallenge}
+        onClick={apply}
+        title={inChallenge ? "Not during a challenge: it allows only its own gates" : "Apply this gate on the sphere"}
+      >
         Apply to {target} ▸
       </button>
     </form>

@@ -1,0 +1,615 @@
+/* The Learn pages: a reading column, in the app's palette and fonts, light and dark. */
+@import "@fontsource/michroma/400.css";
+@import "katex/dist/katex.min.css";
+@import "../theme.css";
+@import "../tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.65 var(--font-ui);
+}
+
+a {
+  color: var(--primary);
+  text-underline-offset: 3px;
+}
+
+/* --- Header and footer ------------------------------------------------------------------------ */
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 14px 24px;
+}
+
+.site-header > a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* Written "Bloch Sphere" and capitalized here, so screen readers don't spell it out. */
+.site-title {
+  font: 400 17px/1.2 var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 15px;
+}
+
+.site-nav a {
+  color: var(--text-muted);
+}
+
+.site-nav a:hover {
+  color: var(--text);
+}
+
+.theme-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.theme-button:hover {
+  border-color: var(--highlight);
+}
+
+.theme-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.theme-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The button shows the theme it switches to: the moon in light, the sun in dark. */
+.theme-button .icon-light {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-button .icon-light {
+  display: block;
+}
+
+:root[data-theme="dark"] .theme-button .icon-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-button .icon-light {
+    display: block;
+  }
+
+  :root:not([data-theme="light"]) .theme-button .icon-dark {
+    display: none;
+  }
+}
+
+.site-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  border-top: 1px solid var(--border-muted);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.site-footer p {
+  margin: 4px 0;
+}
+
+/* --- The reading column ----------------------------------------------------------------------- */
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 24px 40px;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.breadcrumb li + li::before {
+  content: "›";
+  margin: 0 8px;
+}
+
+h1 {
+  margin: 12px 0 16px;
+  font-size: 34px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin: 44px 0 10px;
+  font-size: 23px;
+  line-height: 1.3;
+}
+
+h3 {
+  margin: 28px 0 8px;
+  font-size: 18px;
+}
+
+p,
+ul,
+ol {
+  margin: 0 0 16px;
+}
+
+li {
+  margin: 4px 0;
+}
+
+.lead {
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+strong {
+  font-weight: 650;
+}
+
+.katex {
+  font-size: 1.08em;
+}
+
+/* Long formulas scroll sideways on narrow screens instead of widening the page. */
+.math-block {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0 0 16px;
+  padding: 2px 0;
+}
+
+.math-block .katex-display {
+  margin: 8px 0;
+}
+
+/* --- Figures ---------------------------------------------------------------------------------- */
+
+.figure {
+  margin: 8px auto 24px;
+  max-width: 340px;
+  text-align: center;
+}
+
+.figure figcaption {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.beside {
+  display: grid;
+  gap: 0 32px;
+}
+
+@media (min-width: 760px) {
+  main:has(.beside) {
+    max-width: 880px;
+  }
+
+  .beside {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+
+  .beside .figure {
+    margin-top: 0;
+  }
+}
+
+.sphere-figure {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.fig-sphere {
+  fill: var(--sphere);
+  fill-opacity: 0.1;
+  stroke: var(--sphere-line);
+  stroke-width: 1.2;
+}
+
+.fig-circle,
+.fig-axis,
+.fig-rotation-axis,
+.fig-arc-path,
+.fig-angle,
+.fig-shadow,
+.fig-level {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.fig-circle {
+  stroke: var(--sphere-line);
+  stroke-width: 1;
+}
+
+.fig-axis {
+  stroke: var(--axis);
+  stroke-width: 1;
+}
+
+.fig-circle.back,
+.fig-axis.back {
+  stroke-dasharray: 3 4;
+  opacity: 0.7;
+}
+
+.fig-rotation-axis {
+  stroke: var(--rotation-axis);
+  stroke-width: 1.6;
+  stroke-dasharray: 6 4;
+}
+
+.fig-rotation-axis.back {
+  opacity: 0.55;
+}
+
+.fig-axis-label {
+  fill: var(--rotation-axis);
+  font: 600 13px var(--font-ui);
+}
+
+.fig-label {
+  fill: var(--text);
+  font: 17px var(--font-math);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.fig-label.behind {
+  fill: var(--text-muted);
+  opacity: 0.75;
+}
+
+.q1 {
+  --q: var(--qubit-1);
+}
+
+.q2 {
+  --q: var(--qubit-2);
+}
+
+.q3 {
+  --q: var(--qubit-3);
+}
+
+.q4 {
+  --q: var(--qubit-4);
+}
+
+.q5 {
+  --q: var(--qubit-5);
+}
+
+.fig-arrow line {
+  stroke: var(--q);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+.fig-arrow path,
+.fig-arrow circle {
+  fill: var(--q);
+}
+
+.fig-arrow.ghost {
+  opacity: 0.5;
+}
+
+.fig-arrow.ghost line {
+  stroke-dasharray: 5 4;
+}
+
+.fig-tip {
+  fill: var(--q);
+  font: 600 14px var(--font-ui);
+}
+
+.fig-arc-path {
+  stroke: var(--q);
+  stroke-width: 2;
+}
+
+.fig-arc-path.back {
+  opacity: 0.45;
+}
+
+.fig-arc.dashed .fig-arc-path {
+  stroke-dasharray: 6 5;
+  stroke-width: 1.6;
+}
+
+.fig-dot {
+  fill: var(--q);
+  stroke: var(--bg);
+  stroke-width: 1.5;
+}
+
+.fig-dot.behind {
+  opacity: 0.45;
+}
+
+.fig-angle {
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+}
+
+.fig-angle-label {
+  fill: var(--text);
+  font: italic 16px var(--font-math);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.fig-shadow {
+  stroke: var(--text-muted);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+
+.fig-level {
+  stroke: var(--q, var(--qubit-1));
+  stroke-width: 5;
+  opacity: 0.35;
+}
+
+.fig-level-dot {
+  fill: var(--qubit-1);
+}
+
+/* --- Tables, notes, links into the app -------------------------------------------------------- */
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 16px;
+}
+
+th,
+td {
+  padding: 7px 12px 7px 0;
+  border-bottom: 1px solid var(--border-muted);
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+td.motion {
+  color: var(--text-muted);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.note {
+  margin: 20px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+  background: var(--bg-raised);
+}
+
+.note p:last-child {
+  margin-bottom: 0;
+}
+
+.note-title {
+  margin-bottom: 4px;
+  font-weight: 650;
+}
+
+.try-it {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 8px 12px 0;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--bg-raised);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.try-it:hover {
+  background: var(--bg-sunken);
+}
+
+.try-it:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.try-it-label {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.try-it-label::before {
+  content: "▶ ";
+}
+
+.try-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* --- The guide list and the pager ------------------------------------------------------------- */
+
+.guide-list {
+  padding: 0;
+  list-style: none;
+  counter-reset: guide;
+}
+
+.guide-list > li {
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.guide-list > li > a {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.guide-list p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+}
+
+.guide-list ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 48px;
+}
+
+.pager a {
+  display: block;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.pager a:hover {
+  border-color: var(--highlight);
+}
+
+.pager .next {
+  grid-column: 2;
+  text-align: right;
+}
+
+.pager-dir {
+  display: block;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.pager-name {
+  display: block;
+  font-weight: 650;
+}
+
+@media (max-width: 560px) {
+  body {
+    font-size: 16px;
+  }
+
+  .site-header,
+  main,
+  .site-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 21px;
+  }
+
+  .pager {
+    grid-template-columns: 1fr;
+  }
+
+  .pager .next {
+    grid-column: auto;
+  }
+}
+
+/* --- The glossary on the Learn hub ------------------------------------------------------------ */
+
+.glossary {
+  margin: 0;
+}
+
+.glossary > div {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.glossary dt {
+  font-weight: 650;
+}
+
+.glossary dd {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+}

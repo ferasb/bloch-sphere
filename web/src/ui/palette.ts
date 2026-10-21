@@ -6,13 +6,13 @@ let ctx: CanvasRenderingContext2D | null = null;
 let probe: HTMLElement | null = null;
 
 /**
- * Read a color token from the stylesheets as a three.js Color, so theme.css and styles.css stay the
+ * Read a color token from the stylesheets as a three.js Color, so theme.css and tokens.css stay the
  * single source of truth. Tokens are light-dark() pairs of oklch colors: a hidden element resolves
  * the token for the current color scheme, and painting the result on a 1x1 canvas converts it to sRGB.
  */
 function cssColor(name: string): Color {
   if (!getComputedStyle(document.documentElement).getPropertyValue(name).trim()) {
-    throw new Error(`Color token ${name} is not defined in theme.css or styles.css`);
+    throw new Error(`Color token ${name} is not defined in theme.css or tokens.css`);
   }
   probe ??= document.body.appendChild(document.createElement("span"));
   probe.hidden = true;

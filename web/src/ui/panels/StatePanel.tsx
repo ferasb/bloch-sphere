@@ -5,6 +5,7 @@ import { frameOf } from "../view";
 import { AmplitudeCircle } from "../widgets/AmplitudeCircle";
 import { ProbabilityBar } from "../widgets/ProbabilityBar";
 import { QubitTag } from "../widgets/QubitTag";
+import { Term } from "../widgets/Term";
 import { Tex } from "../widgets/Tex";
 
 /** The selected qubit at the playhead, in several representations. Moves with the animation. */
@@ -25,7 +26,7 @@ export function StatePanel() {
   return (
     <section className="panel-section" aria-labelledby="state-heading">
       <h2 id="state-heading">
-        State <QubitTag name={entry.name} colorSlot={entry.colorSlot} />
+        <Term id="state">State</Term> <QubitTag name={entry.name} colorSlot={entry.colorSlot} />
       </h2>
 
       <div className="ket">
@@ -35,7 +36,9 @@ export function StatePanel() {
       <div className="state-views">
         <figure className="state-view">
           <Tex tex={columnTex(state)} />
-          <figcaption>vector</figcaption>
+          <figcaption>
+            <Term id="vector">vector</Term>
+          </figcaption>
         </figure>
         <figure className="state-view">
           <div className="circle-pair">
@@ -50,28 +53,54 @@ export function StatePanel() {
           </div>
         </figure>
       </div>
-      <p className="circle-legend">circle area = probability · line = phase</p>
+      <p className="circle-legend">
+        <Term id="circles" align="end">
+          circle area = probability · line = phase
+        </Term>
+      </p>
 
       <div className="probabilities">
-        <ProbabilityBar label={<Tex tex="P(0)" />} p={p0} colorSlot={entry.colorSlot} />
-        <ProbabilityBar label={<Tex tex="P(1)" />} p={p1} colorSlot={entry.colorSlot} />
+        <ProbabilityBar
+          label={
+            <Term id="probability">
+              <Tex tex="P(0)" />
+            </Term>
+          }
+          p={p0}
+          colorSlot={entry.colorSlot}
+        />
+        <ProbabilityBar
+          label={
+            <Term id="probability">
+              <Tex tex="P(1)" />
+            </Term>
+          }
+          p={p1}
+          colorSlot={entry.colorSlot}
+        />
       </div>
 
       <dl className="readout">
         <div>
           <dt>
-            <Tex tex="\theta" />
+            <Term id="theta">
+              <Tex tex="\theta" />
+            </Term>
           </dt>
           <dd>{degreesText(theta)}</dd>
         </div>
         <div>
           <dt>
-            <Tex tex="\varphi" />
+            <Term id="phi">
+              <Tex tex="\varphi" />
+            </Term>
           </dt>
           <dd title={onPole ? "φ is undefined at the poles" : undefined}>{onPole ? "—" : degreesText(phi)}</dd>
         </div>
         <div>
-          <dt>(x, y, z)</dt>
+          <dt>
+            <Term id="coordinates">(x, y, z)</Term>
+          </dt>
           <dd>
             ({coordinateText(x)}, {coordinateText(y)}, {coordinateText(z)})
           </dd>

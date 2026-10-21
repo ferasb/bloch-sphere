@@ -8,10 +8,12 @@ An interactive Bloch sphere for beginner quantum students: a static, desktop web
   - `src/math/`: complex numbers, qubits, gates, vectors. Pure.
   - `src/model/`: `Sphere`, the one model (qubits + journey). Pure: no DOM, React or three.js.
   - `src/format/`: text and LaTeX formatting. Pure.
-  - `src/persist/`: browser storage (sessionStorage per tab, localStorage for saved gates and the theme), validated on load.
+  - `src/persist/`: browser storage (sessionStorage per tab, localStorage for saved gates, challenge stars and the theme), validated on load.
+  - `src/learn/`: the Learn pages (`/learn/…`), static HTML rendered from React when the site is built, by `plugins/learnPages.ts` (`design.md` §13). `pages.tsx` lists them; `guides/` holds their text; `figure.tsx` draws the SVG spheres.
   - `src/ui/`: React. `rooms.ts` (which room is open, from the URL hash). The Sphere room: `store.ts` (Zustand: its Sphere, view state, playhead), `controls/`, `panels/`. The Gate Lab: `lab/` (its own store, `labStore.ts`). Shared: `scene/` (the 3D sphere: it draws a `Timeline` from whatever `SceneSource` it's given, never a particular model), `libraryStore.ts` (My gates), `playhead.ts`, `view.ts`, `widgets/`.
-  - `src/theme.css`: the palette, light and dark, shared with ferasbisharat.com (a copy; the original is `ferasb.github.io/theme.css`). `persist/theme.ts` and `ui/theme.ts` keep the visitor's theme choice.
-  - `public/`: copied as is into the build (the favicons, the About and Privacy pages, `theme-init.js`).
+  - `src/theme.css`: the palette, light and dark, shared with ferasbisharat.com (a copy; the original is `ferasb.github.io/theme.css`). `src/tokens.css`: this site's tokens on top of it (qubits, the 3D scene, fonts), shared by the app and the Learn pages. `persist/theme.ts` and `ui/theme.ts` keep the visitor's theme choice.
+  - `public/`: copied as is into the build (the favicons, `og.png`, `robots.txt`, the About and Privacy pages, `theme-init.js`, which a Vite plugin adds to every page's head).
+  - `plugins/`: Vite plugins (`learnPages.ts`). Type-checked with Node's types by `tsconfig.node.json`.
 - `python/`: the reference implementation (`qubit.py`, `gates.py`, `tests/`; NumPy, pytest).
 - `docs/`: the design documents, and how to deploy (`deploying.md`).
 - `.github/workflows/`: CI (web + Python tests on every push) and the GitHub Pages deploy (by hand, or on every push to `main` once the `DEPLOY_PAGES` variable is set).
@@ -33,6 +35,7 @@ Node comes from nvm; non-interactive shells need `source ~/.nvm/nvm.sh` first.
 - **Animation reads the store, not React state.** 3D components read the playhead with `useApp.getState()` inside `useFrame`; only small panels subscribe to it.
 - **Stable qubit ids.** Color follows the qubit's color slot, never its position in a list.
 - **Hue means "which qubit".** Phase is always shown as an angle, never a color.
-- **Colors are OKLCH tokens**: the palette in `web/src/theme.css`, this site's own (qubits, the 3D scene) in `web/src/styles.css`. Every color has a light and a dark value, `light-dark(light, dark)`. The 3D scene reads them through `ui/palette.ts`. Don't hard-code colors (static files in `public/` can't read the tokens, so they copy the values and say which). Change the palette in the original first (`ferasb.github.io/theme.css`), then copy it here.
+- **Colors are OKLCH tokens**: the palette in `web/src/theme.css`, this site's own (qubits, the 3D scene) in `web/src/tokens.css`. Every color has a light and a dark value, `light-dark(light, dark)`. The 3D scene reads them through `ui/palette.ts`. Don't hard-code colors (static files in `public/` can't read the tokens, so they copy the values and say which). Change the palette in the original first (`ferasb.github.io/theme.css`), then copy it here.
 - **Nothing from other sites.** No third-party scripts, fonts, analytics or requests: the privacy page promises it, and the Content Security Policy (`vite.config.ts`) enforces it.
 - **Math stays in sync.** A change to the math in TypeScript or Python needs the same change, and a test, in the other.
+- **The Learn pages can't contradict the app.** Numbers, matrices, tables and pictures come from the app's math when the site is built; a fact stated in the prose gets a check in `learn/claims.test.ts`. Write for beginners: plain words first, then the math, and never a simplification that's wrong.

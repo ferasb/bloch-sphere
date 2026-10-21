@@ -1,4 +1,5 @@
 import { describeGate } from "../../format/gateNames";
+import { allows, challengeById } from "../../model/challenges";
 import { resolveGate, type FixedGateName, type GateSpec } from "../../model/sphere";
 import { savedGateSpec } from "../gates";
 import { useLibrary } from "../libraryStore";
@@ -38,15 +39,25 @@ function GateTarget() {
   );
 }
 
+/** Whether a gate works right now: during a challenge, only its gates do. */
+function useAllowed(spec: GateSpec): boolean {
+  return useApp((s) => {
+    const c = challengeById(s.challenge);
+    return !c || allows(c, { kind: "gate", gate: spec, targets: [] });
+  });
+}
+
 /** A gate button: points to preview, clicks to apply. */
 function GateButton({ spec, label, title }: { spec: GateSpec; label: string; title: string }) {
   const { applyGate, setPreview } = useApp.getState();
+  const allowed = useAllowed(spec);
   const show = () => setPreview({ kind: "gate", gate: spec });
   const hide = () => setPreview(null);
   return (
     <button
       type="button"
-      title={title}
+      title={allowed ? title : `${title} · not in this challenge`}
+      disabled={!allowed}
       onClick={() => {
         // Clicking commits: drop the preview, or it would show where a second click goes.
         hide();
@@ -98,6 +109,7 @@ function RotationButton() {
  */
 export function GateToolbar() {
   const pinned = useLibrary((s) => s.gates).filter((g) => g.pinned);
+  const inChallenge = useApp((s) => s.challenge !== null);
 
   return (
     <div className="gate-toolbar" role="group" aria-labelledby="gate-toolbar-title">
@@ -119,12 +131,17 @@ export function GateToolbar() {
         {GATE_NAMES.map((name) => (
           <GateButton key={name} spec={{ name }} label={name} title={`${describeGate(name, resolveGate({ name }))} · key ${gateKey(name)}`} />
         ))}
-        <span className="toolbar-divider" aria-hidden />
-        <RotationButton />
-        {pinned.length > 0 && <span className="toolbar-divider" aria-hidden />}
-        {pinned.map((g) => (
-          <GateButton key={g.id} spec={savedGateSpec(g)} label={g.label} title={savedGateTitle(g)} />
-        ))}
+        {/* A challenge allows only some of the built-ins above. */}
+        {!inChallenge && (
+          <>
+            <span className="toolbar-divider" aria-hidden />
+            <RotationButton />
+            {pinned.length > 0 && <span className="toolbar-divider" aria-hidden />}
+            {pinned.map((g) => (
+              <GateButton key={g.id} spec={savedGateSpec(g)} label={g.label} title={savedGateTitle(g)} />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

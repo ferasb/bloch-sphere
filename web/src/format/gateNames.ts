@@ -32,10 +32,32 @@ function gateNickname(symbol: string): string | null {
   return NAMES[symbol]?.also ?? null;
 }
 
+/** The Learn page about each gate (a site path, as in src/learn/pages.tsx). */
+const LEARN: Record<string, string> = {
+  X: "learn/gates/pauli-x/",
+  Y: "learn/gates/pauli-y/",
+  Z: "learn/gates/pauli-z/",
+  H: "learn/gates/hadamard/",
+  S: "learn/gates/s-and-t/",
+  T: "learn/gates/s-and-t/",
+  "S†": "learn/gates/s-and-t/",
+  "T†": "learn/gates/s-and-t/",
+};
+
+/** The Learn page explaining a gate, for the built-ins and the rotations, or null. */
+export function gateLearnPath(symbol: string): string | null {
+  return /^R[xyz]\(/.test(symbol) ? "learn/gates/rotation-gates/" : (LEARN[symbol] ?? null);
+}
+
 /** A gate described for a tooltip: "Hadamard (H): 180° about the x+z diagonal". */
 export function describeGate(symbol: string, gate: Gate): string {
   const name = gateName(symbol);
   const also = gateNickname(symbol);
   const title = name ? `${name} (${symbol})${also ? `, ${also}` : ""}` : symbol;
   return `${title}: ${rotationText(gate)}`;
+}
+
+/** Gate symbols as a list in words: "S", "H and S", "X, Y, Z or H" (the word joining the last two is `last`). */
+export function gateListText(symbols: readonly string[], last = "and"): string {
+  return symbols.length <= 1 ? (symbols[0] ?? "") : `${symbols.slice(0, -1).join(", ")} ${last} ${symbols[symbols.length - 1]}`;
 }

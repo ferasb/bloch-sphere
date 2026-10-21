@@ -21,3 +21,26 @@ export function saveSession(sphere: Sphere): void {
     // Storage full or blocked: the journey just won't survive a reload.
   }
 }
+
+// The challenge this tab is playing, if any (model/challenges.ts), so a reload keeps it.
+const CHALLENGE_KEY = "bloch-sphere:challenge";
+
+export function loadChallenge(): string | null {
+  try {
+    return sessionStorage.getItem(CHALLENGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveChallenge(id: string | null): void {
+  try {
+    if (id) {
+      sessionStorage.setItem(CHALLENGE_KEY, id);
+    } else {
+      sessionStorage.removeItem(CHALLENGE_KEY);
+    }
+  } catch {
+    // Storage blocked: the challenge ends with a reload.
+  }
+}

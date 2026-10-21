@@ -2,16 +2,19 @@ import { stateText } from "../../format/ket";
 import { MAX_QUBITS } from "../../model/sphere";
 import { useApp } from "../store";
 import { QubitTag } from "../widgets/QubitTag";
+import { ChallengesButton } from "./Challenges";
 import { SetStateButton } from "./SetState";
 
 /**
  * Along the top of the sphere, everything about the qubits themselves: one chip per qubit (select,
- * remove), add one, set a state, and whether actions apply to all of them.
+ * remove), add one, set a state, and whether actions apply to all of them. At the end, the challenges.
  */
 export function QubitStrip() {
   const sphere = useApp((s) => s.sphere);
   const selected = useApp((s) => s.selected);
   const applyToAll = useApp((s) => s.applyToAll);
+  // A challenge is about q1 alone, from its own start: no adding qubits, no setting states.
+  const inChallenge = useApp((s) => s.challenge !== null);
   const { select, addQubit, removeQubit, setApplyToAll } = useApp.getState();
 
   return (
@@ -29,18 +32,19 @@ export function QubitStrip() {
           )}
         </div>
       ))}
-      {sphere.canAddQubit && (
+      {sphere.canAddQubit && !inChallenge && (
         <button type="button" className="button-small" onClick={addQubit} title={`Add a qubit (up to ${MAX_QUBITS})`}>
           + Qubit
         </button>
       )}
-      <SetStateButton />
+      {!inChallenge && <SetStateButton />}
       {sphere.qubits.length > 1 && (
         <label className="toggle" title="Key A">
           <input type="checkbox" checked={applyToAll} onChange={(e) => setApplyToAll(e.target.checked)} />
           Apply to all qubits
         </label>
       )}
+      <ChallengesButton />
     </div>
   );
 }

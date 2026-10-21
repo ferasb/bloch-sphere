@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react";
 import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
+import { learnPages } from "./plugins/learnPages.ts";
 
 /**
  * The Content Security Policy, as a <meta> tag because GitHub Pages can't send headers. Everything
@@ -28,8 +29,23 @@ function contentSecurityPolicy(): Plugin {
   };
 }
 
+/**
+ * public/theme-init.js, first in every page's <head>: a classic script, so it applies a picked theme
+ * before the first paint. Added here because Vite would warn about it in the HTML (it can't bundle a
+ * script that isn't a module), and the path depends on how deep the page is.
+ */
+function themeInit(): Plugin {
+  return {
+    name: "theme-init",
+    transformIndexHtml: (_, { path }) => [
+      { tag: "script", attrs: { src: `${"../".repeat(path.split("/").length - 2)}theme-init.js` }, injectTo: "head-prepend" },
+    ],
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), contentSecurityPolicy()],
+  // Both add to the start of <head>, the later one first: the CSP ends up first, before any script.
+  plugins: [react(), learnPages(), themeInit(), contentSecurityPolicy()],
   // Relative asset paths, so the build works from any subpath (e.g. GitHub Pages).
   base: "./",
   build: {

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bloch-sphere.ferasbisharat.com/sitemap.xml

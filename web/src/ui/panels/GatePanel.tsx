@@ -1,4 +1,4 @@
-import { gateName } from "../../format/gateNames";
+import { gateLearnPath, gateName } from "../../format/gateNames";
 import { onAxisNote, rotationText } from "../../format/rotation";
 import { tileFromSpec } from "../../model/bench";
 import { resolveGate } from "../../model/sphere";
@@ -7,6 +7,7 @@ import { goToRoom } from "../rooms";
 import { useApp } from "../store";
 import { frameOf } from "../view";
 import { GateMatrix } from "../widgets/GateMatrix";
+import { Term } from "../widgets/Term";
 
 /** The gate under the pointer, or else the gate of the step on screen: matrix and rotation. */
 export function GatePanel() {
@@ -22,7 +23,9 @@ export function GatePanel() {
   if (!spec) {
     return (
       <section className="panel-section" aria-labelledby="gate-heading">
-        <h2 id="gate-heading">Gate</h2>
+        <h2 id="gate-heading">
+          <Term id="matrix">Gate</Term>
+        </h2>
         <p className="placeholder">Point at a gate to see its matrix and the rotation it performs.</p>
       </section>
     );
@@ -34,12 +37,13 @@ export function GatePanel() {
   const qubit = previewing ? sphere.qubit(selected) : sphere.steps[stepIndex - 1]?.qubits.find((q) => q.id === selected);
   const targeted = previewing || (step.action?.kind === "gate" && step.action.targets.includes(selected));
   const note = qubit && targeted ? onAxisNote(qubit.name, qubit.state.blochVector(), axis, angle) : null;
+  const learn = gateLearnPath(gate.name ?? "");
 
   return (
     <section className="panel-section" aria-labelledby="gate-heading">
       <div className="section-head">
         <h2 id="gate-heading">
-          Gate <span className="gate-name">{gate.name}</span>
+          <Term id="matrix">Gate</Term> <span className="gate-name">{gate.name}</span>
           {gateName(gate.name ?? "") && <span className="heading-detail">{gateName(gate.name ?? "")}</span>}
           {previewing && <span className="badge">preview</span>}
         </h2>
@@ -57,9 +61,14 @@ export function GatePanel() {
       <GateMatrix gate={gate} />
       <p className="matrix-caption">Column j is where |j⟩ goes.</p>
       <p className="rotation" aria-live="polite">
-        Rotates the sphere <strong>{rotationText(gate)}</strong>.
+        <Term id="rotation">Rotates the sphere</Term> <strong>{rotationText(gate)}</strong>.
       </p>
       {note && <p className="note">{note}</p>}
+      {learn && (
+        <p className="learn-link">
+          <a href={learn}>About the {gateName(gate.name ?? "")?.replace(/ gate$/, "")} gate ›</a>
+        </p>
+      )}
     </section>
   );
 }
