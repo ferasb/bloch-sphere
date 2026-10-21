@@ -1,5 +1,6 @@
 import { GateToolbar } from "./controls/GateToolbar";
 import { QubitStrip } from "./controls/QubitStrip";
+import { ThemeButton } from "./controls/ThemeButton";
 import { GateLab } from "./lab/GateLab";
 import { GatePanel } from "./panels/GatePanel";
 import { JourneyBar } from "./panels/JourneyBar";
@@ -39,10 +40,13 @@ export function App() {
               </button>
             ))}
           </nav>
-          <nav className="topbar-links" aria-label="About this site">
-            <a href="about.html">About</a>
-            <a href="privacy.html">Privacy</a>
-          </nav>
+          <div className="topbar-end">
+            <nav className="topbar-links" aria-label="About this site">
+              <a href="about.html">About</a>
+              <a href="privacy.html">Privacy</a>
+            </nav>
+            <ThemeButton />
+          </div>
         </div>
       </header>
       {room === "lab" ? <GateLab /> : <SphereRoom />}

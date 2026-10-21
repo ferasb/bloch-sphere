@@ -3,6 +3,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, type ReactNode } from "react";
 import * as THREE from "three";
 import { scenePalette } from "../palette";
+import { useTheme } from "../theme";
 import { Ghost } from "./Ghost";
 import { OverlayContext, OverlayProjector, OverlayRegistry } from "./overlay";
 import { QubitArrows } from "./QubitArrows";
@@ -29,6 +30,7 @@ interface SceneProps {
 /** A 3D Bloch sphere. Draws the source's frame at its playhead; holds no state of its own. */
 export function Scene({ source, children, stepAxis = "always" }: SceneProps) {
   const overlay = useMemo(() => new OverlayRegistry(), []);
+  const scheme = useTheme((s) => s.scheme);
   return (
     <SceneSourceContext.Provider value={source}>
       <OverlayContext.Provider value={overlay}>
@@ -38,13 +40,17 @@ export function Scene({ source, children, stepAxis = "always" }: SceneProps) {
           dpr={[1, 2]}
           camera={{ fov: FOV, near: 0.1, far: 100, up: [0, 0, 1], position: CAMERA_POSITION }}
         >
-          <Setup />
-          <SphereShell />
-          <RotationAxis whilePlayingOnly={stepAxis === "while-playing"} />
-          <Trail />
-          <QubitArrows />
-          <Ghost />
-          {children}
+          {/* Rebuilt when the theme changes, so every object takes its colors from the new palette.
+              The camera and its controls stay, so the view doesn't jump. */}
+          <group key={scheme}>
+            <Setup />
+            <SphereShell />
+            <RotationAxis whilePlayingOnly={stepAxis === "while-playing"} />
+            <Trail />
+            <QubitArrows />
+            <Ghost />
+            {children}
+          </group>
           <OverlayProjector />
           <OrbitControls makeDefault enablePan={false} enableDamping minDistance={3.2} maxDistance={12} />
         </Canvas>
@@ -84,8 +90,12 @@ function Setup() {
     invalidate();
   }, [camera, size, invalidate]);
 
-  // frameloop="demand" only draws when asked: ask on every change of the source (playhead, preview, …).
-  useEffect(() => source.subscribe(() => invalidate()), [source, invalidate]);
+  // frameloop="demand" only draws when asked: ask on mount (also after a theme change rebuilds the
+  // scene) and on every change of the source (playhead, preview, …).
+  useEffect(() => {
+    invalidate();
+    return source.subscribe(() => invalidate());
+  }, [source, invalidate]);
 
   return (
     <>

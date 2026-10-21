@@ -13,7 +13,7 @@ An interactive Bloch sphere for students meeting quantum computing for the first
 - **Replay the journey.** Every gate is a step: click a step to replay to it, undo the last one, or reset.
 - **Build gates in the Gate Lab.** Combine gates and see the single rotation they add up to (H·T·H is 45° about x), undo them (U†), repeat them, take fractions (√X), and check whether order matters. Save your gates and use them on the sphere.
 
-It's made for desktop browsers. Keyboard: X, Y, Z, H, S, T apply gates (Shift+S and Shift+T for S† and T†), 1–5 select a qubit, A applies to all, Ctrl+Z undoes.
+It's made for desktop browsers, in light or dark: it follows your system, or pick one with the theme button in the top bar. Keyboard: X, Y, Z, H, S, T apply gates (Shift+S and Shift+T for S† and T†), 1–5 select a qubit, A applies to all, Ctrl+Z undoes.
 
 Your work stays in your browser. There are no accounts, cookies, analytics or third-party requests; see the [privacy page](web/public/privacy.html). Questions or ideas: open an issue, or write to ferasbish@gmail.com.
 

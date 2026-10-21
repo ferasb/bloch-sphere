@@ -1,47 +1,22 @@
 :root {
-  color-scheme: dark;
+  /* Colors come from theme.css, the palette shared with ferasbisharat.com. These build on it. */
 
-  /* Surfaces */
-  --bg-dark: oklch(0.1 0.025 264);
-  --bg: oklch(0.15 0.025 264);
-  --bg-light: oklch(0.2 0.025 264);
+  /* Qubits: the palette's five accents, in its fixed order (validated as a set there). */
+  --qubit-1: var(--accent-1); /* amber */
+  --qubit-2: var(--accent-2); /* violet */
+  --qubit-3: var(--accent-3); /* green */
+  --qubit-4: var(--accent-4); /* cyan */
+  --qubit-5: var(--accent-5); /* pink */
 
-  /* Text. --text chroma is 0.015: at L 0.96 this hue only reaches 0.019 inside sRGB. */
-  --text: oklch(0.96 0.015 264);
-  --text-muted: oklch(0.76 0.05 264);
-
-  /* Lines and interaction states. Put --text, not --text-muted, on --highlight. */
-  --highlight: oklch(0.5 0.05 264);
-  --border: oklch(0.4 0.05 264);
-  --border-muted: oklch(0.3 0.05 264);
-
-  /* Accents */
-  --primary: oklch(0.76 0.1 264);
-  --secondary: oklch(0.76 0.1 84);
-
-  /* Status: always shown with an icon and a label, never color alone */
-  --danger: oklch(0.72 0.13 25);
-  --warning: oklch(0.82 0.12 90);
-  --success: oklch(0.74 0.13 155);
-  --info: oklch(0.76 0.09 220);
-
-  /*
-   * Qubits, assigned in this fixed order. Validated as a set for every pair (any two arrows can
-   * end up side by side): worst pair ΔE 11.1 under protan/deutan simulation and 20.6 for normal
-   * vision. Lightness alternates on purpose; it is the cue that survives color blindness.
-   */
-  --qubit-1: oklch(0.82 0.15 75); /* amber */
-  --qubit-2: oklch(0.6 0.15 295); /* violet */
-  --qubit-3: oklch(0.6 0.15 150); /* green */
-  --qubit-4: oklch(0.82 0.141 215); /* cyan */
-  --qubit-5: oklch(0.74 0.15 355); /* pink */
-
-  /* 3D scene */
-  --scene-bg: var(--bg-dark);
-  --sphere: oklch(0.6 0.06 264);
-  --sphere-line: var(--border);
+  /* 3D scene. The sphere's lines keep about 2.2:1 against the background in both themes. */
+  --scene-bg: var(--bg-sunken);
+  --sphere: light-dark(oklch(0.55 0.08 264), oklch(0.6 0.06 264));
+  --sphere-line: light-dark(oklch(0.72 0.04 264), oklch(0.4 0.05 264));
   --axis: var(--highlight);
   --rotation-axis: var(--primary);
+
+  /* The empty part of a probability bar: a gray trough in light, a raised strip in dark. */
+  --track: light-dark(oklch(0.9 0.02 264), oklch(0.2 0.025 264));
 
   --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
   /* The title: a wide face drawn for capitals, set in caps with extra tracking. */
@@ -165,6 +140,35 @@ ul {
   color: var(--text);
 }
 
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  color: var(--text-muted);
+}
+
+.theme-button:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.theme-button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .panel {
   grid-area: panel;
   display: flex;
@@ -234,7 +238,7 @@ button {
   padding: 8px 10px;
   border: 1px solid var(--border-muted);
   border-radius: 8px;
-  background: var(--bg-light);
+  background: var(--bg-raised);
   color: var(--text);
   font: inherit;
   cursor: pointer;
@@ -282,7 +286,7 @@ input:not([type]) {
   /* --highlight keeps the field edge at 3:1 against the panel. */
   border: 1px solid var(--highlight);
   border-radius: 6px;
-  background: var(--bg-dark);
+  background: var(--bg-sunken);
   color: var(--text);
   font: 15px/1.4 var(--font-ui);
   font-variant-numeric: tabular-nums;
@@ -317,7 +321,7 @@ input[type="checkbox"] {
 
 .qubit-chip.selected {
   border-color: var(--primary);
-  background: var(--bg-light);
+  background: var(--bg-raised);
 }
 
 .qubit-chip-select {
@@ -434,7 +438,7 @@ input[type="checkbox"] {
   border-radius: 12px;
   background: var(--bg);
   color: var(--text);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.5);
+  box-shadow: 0 12px 32px var(--shadow);
 }
 
 .popover h2 {
@@ -609,7 +613,7 @@ input[type="checkbox"] {
 }
 
 .amplitude-phase-halo {
-  stroke: var(--bg-dark);
+  stroke: var(--bg-sunken);
   stroke-width: 4;
 }
 
@@ -631,7 +635,7 @@ input[type="checkbox"] {
   height: 8px;
   overflow: hidden;
   border-radius: 4px;
-  background: var(--bg-light);
+  background: var(--track);
 }
 
 .probability-fill {
@@ -745,7 +749,7 @@ input[type="checkbox"] {
   padding: 8px 10px;
   border-left: 3px solid var(--info);
   border-radius: 4px;
-  background: var(--bg-light);
+  background: var(--bg-raised);
   font-size: 14px;
 }
 
@@ -881,7 +885,7 @@ input[type="checkbox"] {
   padding: 8px 10px 8px 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--bg-light);
+  background: var(--bg-raised);
   font-size: 14px;
   transform: translateX(-50%);
 }
@@ -1140,7 +1144,7 @@ input[type="checkbox"] {
   align-items: center;
   border: 1px solid var(--border-muted);
   border-radius: 8px;
-  background: var(--bg-light);
+  background: var(--bg-raised);
   cursor: grab;
 }
 

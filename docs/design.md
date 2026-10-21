@@ -320,8 +320,9 @@ Ideas beyond the panels above, with a rough sense of value for a beginner and th
 
 ## 8. Visual language
 
-- **Color tokens** live in `web/src/styles.css` as OKLCH. The 3D scene reads them at startup, so there's one source of truth.
-- **Qubit colors** (`--qubit-1` … `--qubit-5`) are validated as a set: every pair stays distinguishable under protanopia and deuteranopia (worst pair ΔE 11.1) and for normal vision (worst 20.6). They're brighter than the usual dark-mode chart range on purpose, because they're thin arrows on near-black.
+- **Color tokens** are OKLCH. The palette (surfaces, text, lines, accents, status, five accent colors) is `web/src/theme.css`, a copy of the one shared with [ferasbisharat.com](https://ferasbisharat.com) (`ferasb.github.io/theme.css`, the original). `web/src/styles.css` builds this site's tokens on it: the qubits, the 3D scene. The 3D scene reads them through `ui/palette.ts`, so there's one source of truth.
+- **Light and dark.** Every palette token is a `light-dark(light, dark)` pair. The site follows the system's theme by default; the theme button in the top bar steps through match the system, light and dark, and the choice is kept in `localStorage` (`persist/theme.ts`). A choice sets `data-theme` on `<html>`, which `theme.css` reads; `public/theme-init.js` sets it before the first paint, on the app and on the About and Privacy pages. When the theme changes, the 3D scene rebuilds its objects with the new palette (`Scene.tsx`); the camera stays.
+- **Qubit colors** (`--qubit-1` … `--qubit-5`, the palette's five accents) are validated as a set in each theme, by OKLab distance under protanopia and deuteranopia simulation: worst pair 11.1 for both themes, and 20.5 (dark) and 20.8 (light) for normal vision. The hues are the same in both themes, so q1 is amber in either. In dark they're brighter than the usual chart range on purpose, because they're thin arrows on near-black; in light they're darker, at least 3:1 against the page and the 3D view.
 - **Identity is never color alone.** With two or more qubits, each arrow tip carries its name (q1, q2).
 - **Phase is an angle, never a hue** (principle 6). Circle notation, dials and the top view all show phase as direction.
 - **Status colors** (danger, warning, success, info) appear only with an icon and a label.

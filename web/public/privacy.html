@@ -2,22 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <script src="theme-init.js"></script>
     <title>Privacy · Bloch Sphere</title>
     <style>
-      /* Colors copy the tokens in src/styles.css (--bg, --text, --text-muted, --primary, --border-muted). */
+      /* Colors copy the tokens in src/theme.css, light and dark, (--bg, --text, --text-muted, --primary, --border-muted). */
       :root {
+        color-scheme: light dark;
+      }
+      /* public/theme-init.js sets data-theme when the visitor picked a theme in the app. */
+      :root[data-theme="light"] {
+        color-scheme: light;
+      }
+      :root[data-theme="dark"] {
         color-scheme: dark;
       }
       body {
         max-width: 680px;
         margin: 0 auto;
         padding: 40px 24px 64px;
-        background: oklch(0.15 0.025 264);
-        color: oklch(0.96 0.015 264);
+        background: light-dark(oklch(0.985 0.005 264), oklch(0.15 0.025 264));
+        color: light-dark(oklch(0.22 0.03 264), oklch(0.96 0.015 264));
         font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
       }
       h1 {
@@ -30,19 +39,19 @@
       }
       p,
       li {
-        color: oklch(0.96 0.015 264);
+        color: light-dark(oklch(0.22 0.03 264), oklch(0.96 0.015 264));
       }
       .muted {
-        color: oklch(0.76 0.05 264);
+        color: light-dark(oklch(0.47 0.05 264), oklch(0.76 0.05 264));
         font-size: 14px;
       }
       a {
-        color: oklch(0.76 0.1 264);
+        color: light-dark(oklch(0.5 0.15 264), oklch(0.76 0.1 264));
         text-underline-offset: 3px;
       }
       code {
         padding: 1px 5px;
-        border: 1px solid oklch(0.3 0.05 264);
+        border: 1px solid light-dark(oklch(0.88 0.02 264), oklch(0.3 0.05 264));
         border-radius: 4px;
         font-size: 14px;
       }
@@ -51,7 +60,7 @@
   <body>
     <a href="./">← Back to Bloch Sphere</a>
     <h1>Privacy</h1>
-    <p class="muted">Last updated 13 October 2026</p>
+    <p class="muted">Last updated 21 October 2026</p>
 
     <p>
       This site uses <strong>no cookies</strong>, no analytics, no ads and no tracking of any kind. It doesn't load anything from other
@@ -65,7 +74,10 @@
         <strong>Session storage</strong> (this tab only, gone when you close the tab): your journey and the Gate Lab's bench, so
         reloading the page doesn't lose them.
       </li>
-      <li><strong>Local storage</strong> (this browser, until you delete it): the gates you save in My gates.</li>
+      <li>
+        <strong>Local storage</strong> (this browser, until you delete it): the gates you save in My gates, and your choice of light or
+        dark theme, if you pick one.
+      </li>
     </ul>
     <p>
       This storage holds only what you build here and is used only to give it back to you. You can delete it at any time by clearing
@@ -81,7 +93,7 @@
 
     <h2>Who runs it</h2>
     <p>
-      Bloch Sphere is run by Feras Bisharat, whom you can reach at <a href="mailto:ferasbish@gmail.com">ferasbish@gmail.com</a>. Its
+      Bloch Sphere is run by Feras Bisharat (<a href="https://ferasbisharat.com">ferasbisharat.com</a>), whom you can reach at <a href="mailto:ferasbish@gmail.com">ferasbish@gmail.com</a>. Its
       source code is public at <a href="https://github.com/ferasb/bloch-sphere">github.com/ferasb/bloch-sphere</a>. More on the
       <a href="about.html">About</a> page.
     </p>

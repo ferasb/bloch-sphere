@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
     <meta name="description" content="An interactive Bloch sphere: apply quantum gates to qubits and watch their states rotate. Build your own gates in the Gate Lab." />
-    <meta name="theme-color" content="oklch(0.15 0.025 264)" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="oklch(0.985 0.005 264)" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="oklch(0.15 0.025 264)" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Bloch Sphere" />
     <meta property="og:description" content="An interactive Bloch sphere: apply quantum gates to qubits and watch their states rotate." />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <!-- Not a module and not deferred: it applies a chosen theme before the page first paints. -->
+    <script src="theme-init.js"></script>
     <title>Bloch Sphere</title>
   </head>
   <body>

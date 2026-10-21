@@ -1,21 +1,25 @@
 import { Color, SRGBColorSpace } from "three";
+import { useTheme, type Scheme } from "./theme";
 
 let ctx: CanvasRenderingContext2D | null = null;
+let probe: HTMLElement | null = null;
 
 /**
- * Read a color token from the stylesheet as a three.js Color, so styles.css stays the single
- * source of truth. The token can use any CSS color syntax (e.g. oklch); painting it on a 1x1
- * canvas lets the browser do the conversion to sRGB.
+ * Read a color token from the stylesheets as a three.js Color, so theme.css and styles.css stay the
+ * single source of truth. Tokens are light-dark() pairs of oklch colors: a hidden element resolves
+ * the token for the current color scheme, and painting the result on a 1x1 canvas converts it to sRGB.
  */
 function cssColor(name: string): Color {
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  if (!value) {
-    throw new Error(`Color token ${name} is not defined in styles.css`);
+  if (!getComputedStyle(document.documentElement).getPropertyValue(name).trim()) {
+    throw new Error(`Color token ${name} is not defined in theme.css or styles.css`);
   }
+  probe ??= document.body.appendChild(document.createElement("span"));
+  probe.hidden = true;
+  probe.style.color = `var(${name})`;
   ctx ??= document.createElement("canvas").getContext("2d", { willReadFrequently: true })!;
   ctx.canvas.width = ctx.canvas.height = 1;
   ctx.clearRect(0, 0, 1, 1);
-  ctx.fillStyle = value;
+  ctx.fillStyle = getComputedStyle(probe).color;
   ctx.fillRect(0, 0, 1, 1);
   const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
   return new Color().setRGB(r / 255, g / 255, b / 255, SRGBColorSpace);
@@ -31,17 +35,19 @@ export interface ScenePalette {
   qubits: Color[];
 }
 
-let scene: ScenePalette | null = null;
+const palettes: Partial<Record<Scheme, ScenePalette>> = {};
 
-/** The 3D scene's colors, read from styles.css once. */
+/**
+ * The 3D scene's colors in the current theme, read once per theme. The scene rebuilds when the
+ * theme changes (Scene.tsx), so components just call this while rendering.
+ */
 export function scenePalette(): ScenePalette {
-  scene ??= {
+  return (palettes[useTheme.getState().scheme] ??= {
     background: cssColor("--scene-bg"),
     sphere: cssColor("--sphere"),
     sphereLine: cssColor("--sphere-line"),
     axis: cssColor("--axis"),
     rotationAxis: cssColor("--rotation-axis"),
     qubits: [0, 1, 2, 3, 4, 5].map((slot) => (slot === 0 ? new Color() : cssColor(`--qubit-${slot}`))),
-  };
-  return scene;
+  });
 }
