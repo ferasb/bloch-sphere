@@ -9,8 +9,8 @@ An interactive Bloch sphere for beginner quantum students. You set qubit states,
 ## 1. Goals
 
 - **Audience:** beginners. Someone who has just met kets, gates and the Bloch sphere in a course and wants to *see* them.
-- **Public, desktop website.** Static files, no backend, free hosting. Phones aren't a target, though the page shouldn't break on one.
-- **One browser tab is one instance.** The app fills the window like a desktop app (no page scroll). Each tab is an independent session. See section 9.
+- **Public website, for desktops first.** Static files, no backend, free hosting. The Sphere room and the challenges also work on phones and tablets, in one scrolling column; the Gate Lab needs a wide screen (section 5.1).
+- **One browser tab is one instance.** On a wide screen the app fills the window like a desktop app (no page scroll); on a narrow one it's a page that scrolls (section 5.1). Each tab is an independent session. See section 9.
 - **Every representation is linked.** The sphere, the ket, the amplitudes, the matrices and the history all show the same state, and pointing at something in one view highlights it in all the others.
 - **Seeing beats reading.** Captions are generated from the math ("S rotates 90° about z. |0⟩ lies on the z axis, so it doesn't move"), never hand-written per case.
 
@@ -178,7 +178,7 @@ The Zustand store (`ui/store.ts`) holds the current `Sphere` and everything that
 
 ## 5. Layout
 
-The app fills the window (`100dvh`, no page scroll). It's designed for 1280×720 and up, where the sidebar fits without scrolling. **One sidebar:** the controls frame the sphere (qubits above it, gates below it), so you act right next to the result, and the single sidebar only explains. Resizing and collapsing the sidebar, with its size remembered, is P2.
+The app fills the window (`100dvh`, no page scroll). It's designed for 1280×720 and up, where the sidebar fits without scrolling, and fits from 960px wide; narrower or shorter windows get the layout in section 5.1. **One sidebar:** the controls frame the sphere (qubits above it, gates below it), so you act right next to the result, and the single sidebar only explains. Resizing and collapsing the sidebar, with its size remembered, is P2.
 
 ```
 +--------------------------------------------------------+---------------------------------+
@@ -204,7 +204,42 @@ The app fills the window (`100dvh`, no page scroll). It's designed for 1280×720
 - **Center: the sphere and its controls.** Along the top, everything about the qubits themselves: chips (select, remove), add, **Set state** (a popover with presets, θ/φ sliders, amplitudes) and apply-to-all. Along the bottom, the gate bar: a clear heading, **APPLY A GATE to ● q1**, above the gate buttons, so what the buttons do and whom they act on can't be missed. The 3D view sits between them, so controls never cover the sphere. Later gate controls (rotation gates) join the gate bar; measurement gets its own bar.
 - **Right (380px): what it means.** The state and the gate, as numbers and matrices.
 - **Bottom: what happened.** The journey.
-- **Top bar: the title, centered over the sphere's column (not the whole window), with the description under it.** The part above the sidebar holds actions (share, save, help, settings) as those features arrive.
+- **Top bar: the title, centered over the sphere's column (not the whole window), with the description under it.** The part above the sidebar holds actions (share, save, help, settings) as those features arrive. Below 1080px the description is dropped, so the title stays clear of "Learn the basics".
+
+### 5.1 Narrow screens: phones and tablets
+
+Windows under 960px wide or 500px tall (phones, tablets held upright, small windows) get one column that scrolls. The query is `NARROW` in `ui/media.ts`, and `styles.css` repeats it.
+
+```
++--------------------------------------+
+| BLOCH SPHERE                     [☾] |
+| Learn the basics ›    About  Privacy |
++--------------------------------------+
+| ● q1 |0⟩  [+ Qubit] [Set state ▾]    |
+|                       [Challenges ▾] |
+| (the challenge card, during one)     |
+|                                      |
+|            3D BLOCH SPHERE           |
+|                                      |
+|         APPLY A GATE to ● q1         |
+|   [ X ][ Y ][ Z ][ H ][ S ]          |
+|   [ T ][S†][T†][R(θ)]                |
+| STATE · q1        (GATE beside it    |
+| ...                from 640px wide)  |
+| GATE · H                             |
++--------------------------------------+
+| JOURNEY Start → H ·· [Undo] [Reset]  |  stays at the bottom of the screen
++--------------------------------------+
+```
+
+- **The sphere and the gates come first,** in one screen on most phones: the qubits, the sphere and the gates fill the screen between the top bar and the journey (at least 420px, at most 720px), and the sphere takes what's left, never less than 200px. Never the whole screen, though: a drag on the sphere turns it, so there has to be room around it to scroll the page by. When even the smallest sphere doesn't fit (a small phone, during a challenge), the page scrolls rather than clip it.
+- **During a challenge** its card sits above the sphere, not over it, in three lines: the goal, then the gates used with the hint beside them. "The ring marks the goal" and Start over are left out (the journey's Reset does the same).
+- **The journey stays at the bottom of the screen,** so Undo and Reset are always in reach (except in windows under 500px tall, where it would take too much room).
+- **Phones held sideways** (under 500px tall, landscape): the sphere on the left, the qubits and the gates beside it, and the top bar on one line.
+- **Phones (under 560px wide, and sideways):** the gates are large buttons, five to a row.
+- **Touch:** a finger can't point, so pressing and holding a gate (or a Set state preset) previews it, and letting go doesn't apply it; a tap applies (`ui/previewPress.ts`). Buttons are taller where the pointer is a finger (`pointer: coarse`), hover colors apply only where there's hover, and a double tap doesn't zoom the page. The sphere turns with one finger and zooms with two.
+- **The Gate Lab needs a wide screen.** It puts the ingredients, the test sphere, the bench and the result side by side, and tiles are reordered by dragging. On a narrow screen the Lab says so and offers the way back to the sphere; the room switcher, Gate Lab ▸, Open in Gate Lab ▸ and My gates (whose gates are made in the Lab) are hidden. A Try it link to the Lab still sets up the bench, ready for a wider screen.
+- **Popovers stay in the window:** they line up with their button but never cross the window's edge, and scroll when they're taller than the space left.
 
 ---
 
@@ -251,7 +286,7 @@ Shows the gate under the pointer, or the last gate applied.
 Gates become first-class (a gate library, custom gates, the Gate Lab, and the journey shown as a circuit): see **`design-gates.md`**.
 
 - **Fixed gates (P1):** X, Y, Z, H, S, T, S†, T†. Each button has a small icon showing its rotation axis on a mini sphere (P2), and keyboard shortcuts (P1).
-- **Preview on hover (P1):** pointing at a gate shows a ghost arrow and the dashed path it would take. *Predict first, then click and confirm.* The same ghost previews presets and the θ/φ sliders before "Set state". Clicking commits and clears the preview, so it never shows where a second click would go.
+- **Preview on hover (P1):** pointing at a gate shows a ghost arrow and the dashed path it would take. *Predict first, then click and confirm.* The same ghost previews presets and the θ/φ sliders before "Set state". Clicking commits and clears the preview, so it never shows where a second click would go. On a touch screen, pressing and holding previews (section 5.1).
 - **Rotations (P2):** Rx, Ry, Rz with an angle slider. Dragging the slider previews live; clicking Apply commits.
 - **Custom gate (P3), both ways:**
   - drag an axis point on the sphere and set an angle, and the matrix updates live;
@@ -379,7 +414,7 @@ Each phase ends with a working, deployable site.
 |---|---|
 | 2026-10-10 | **Browser-only web app**, no backend. The Python stays as the reference implementation. |
 | 2026-10-10 | **"Several qubits" means independent qubits**, not entanglement. Up to 5. |
-| 2026-10-10 | **Desktop only.** Phones aren't a target. |
+| 2026-10-10 | **Desktop only.** Phones aren't a target. *(Replaced on 2026-10-22, below.)* |
 | 2026-10-10 | **One tab = one instance** (section 9). |
 | 2026-10-10 | **React + R3F + drei + Zustand** (section 3). |
 | 2026-10-10 | **Undo discards the last step; no redo, no branches.** Plus a **Reset** button (section 4.3). |
@@ -400,6 +435,7 @@ Each phase ends with a working, deployable site.
 | 2026-10-22 | **Challenges are a mode of the Sphere room** (section 13.4); the store enforces the allowed gates. |
 | 2026-10-22 | **Terms explain the app's labels** (section 13.3); one glossary for the app and the Learn hub. |
 | 2026-10-22 | **Search basics, no analytics** (section 13.5). |
+| 2026-10-22 | **Phones and tablets get the Sphere room and the challenges** (replaces *Desktop only*): one scrolling column on narrow screens, press and hold to preview a gate, and the Gate Lab on wide screens only (section 5.1). The guides bring visitors on phones, and their Try it links open the app. |
 
 ---
 
@@ -411,7 +447,7 @@ Added 2026-10-22. The app shows what happens; these explain why, and let people 
 
 - **What:** short guides at `/learn/`: what a qubit is, the Bloch sphere (θ, φ, the Bloch vector, global phase), the six key states, measurement, gates as rotations, one page per gate (Pauli-X, Y, Z, Hadamard, S and T, rotation gates), and the Gate Lab. The hub lists them in reading order with the glossary (13.3); each page has Previous and Next.
 - **Each page:** plain words first, then a picture, then "the math", then Try it links into the app (13.2). Beginner language must not become wrong: no "0 and 1 at once"; orthogonal states are opposite points; global phase is invisible; one qubit only.
-- **Separate pages, not text under the sphere.** The app fills the window with no page scroll (section 5), so the guides are pages of their own, readable without JavaScript, which is also what search engines need.
+- **Separate pages, not text under the sphere.** On a desktop the app fills the window with no page scroll (section 5), so the guides are pages of their own, readable without JavaScript, which is also what search engines need.
 - **Static HTML, built from React** (`src/learn/`, rendered with `renderToStaticMarkup` when the site is built, by `plugins/learnPages.ts`). Each page is one more HTML entry of the Vite build, so it gets the CSP and its own small stylesheet and script (the theme button), and the dev server renders the pages on request. No framework change: the app stays a client-side React app. Pre-rendering the app itself was not done: its visible text is mostly numbers and buttons, and it would risk a flash when the app takes over.
 - **The numbers come from the app's math.** Matrices, "as a rotation" equations with their global phase, the tables of what each gate does to the six key states (`format/gateFacts.ts`), and the pictures (`learn/figure.tsx`: SVG spheres drawn from the same math, seen from the app's starting camera, colored by the theme tokens) are computed when the site is built, so they can't disagree with the sphere. Facts the prose states by hand are checked in `learn/claims.test.ts`. KaTeX runs with `throwOnError` and `strict`, so a typo in a formula fails the build.
 - **Tests** (`learn/learn.test.ts`): every page renders, has one h1, a canonical URL and breadcrumbs, a title of at most 60 characters and a description of at most 155; every link leads to a page that exists; every Try it link parses.

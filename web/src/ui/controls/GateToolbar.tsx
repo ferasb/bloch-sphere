@@ -3,6 +3,7 @@ import { allows, challengeById } from "../../model/challenges";
 import { resolveGate, type FixedGateName, type GateSpec } from "../../model/sphere";
 import { savedGateSpec } from "../gates";
 import { useLibrary } from "../libraryStore";
+import { usePreviewPress } from "../previewPress";
 import { goToRoom } from "../rooms";
 import { useApp } from "../store";
 import { Popover } from "../widgets/Popover";
@@ -47,27 +48,17 @@ function useAllowed(spec: GateSpec): boolean {
   });
 }
 
-/** A gate button: points to preview, clicks to apply. */
+/** A gate button: point at it (or hold it) to preview, click to apply. */
 function GateButton({ spec, label, title }: { spec: GateSpec; label: string; title: string }) {
   const { applyGate, setPreview } = useApp.getState();
   const allowed = useAllowed(spec);
-  const show = () => setPreview({ kind: "gate", gate: spec });
-  const hide = () => setPreview(null);
+  const press = usePreviewPress(
+    () => setPreview({ kind: "gate", gate: spec }),
+    () => setPreview(null),
+    () => applyGate(spec),
+  );
   return (
-    <button
-      type="button"
-      title={allowed ? title : `${title} · not in this challenge`}
-      disabled={!allowed}
-      onClick={() => {
-        // Clicking commits: drop the preview, or it would show where a second click goes.
-        hide();
-        applyGate(spec);
-      }}
-      onPointerEnter={show}
-      onPointerLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-    >
+    <button type="button" title={allowed ? title : `${title} · not in this challenge`} disabled={!allowed} {...press}>
       {label}
     </button>
   );
@@ -120,7 +111,8 @@ export function GateToolbar() {
             to <GateTarget />
           </span>
         </div>
-        <div className="toolbar-links">
+        {/* Saved gates are made in the Gate Lab, which needs a wide screen (design.md §5.1). */}
+        <div className="toolbar-links wide-only">
           <MyGatesButton room="sphere" />
           <button type="button" className="button-small" onClick={() => goToRoom("lab")} title="Build your own gates">
             Gate Lab ▸

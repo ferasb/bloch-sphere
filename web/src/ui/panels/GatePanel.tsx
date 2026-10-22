@@ -3,6 +3,7 @@ import { onAxisNote, rotationText } from "../../format/rotation";
 import { tileFromSpec } from "../../model/bench";
 import { resolveGate } from "../../model/sphere";
 import { useLab } from "../lab/labStore";
+import { TOUCH, useMedia } from "../media";
 import { goToRoom } from "../rooms";
 import { useApp } from "../store";
 import { frameOf } from "../view";
@@ -15,6 +16,7 @@ export function GatePanel() {
   const stepIndex = useApp((s) => frameOf(s).step);
   const sphere = useApp((s) => s.sphere);
   const selected = useApp((s) => s.selected);
+  const touch = useMedia(TOUCH);
 
   const step = sphere.steps[stepIndex];
   const previewing = preview?.kind === "gate";
@@ -26,7 +28,11 @@ export function GatePanel() {
         <h2 id="gate-heading">
           <Term id="matrix">Gate</Term>
         </h2>
-        <p className="placeholder">Point at a gate to see its matrix and the rotation it performs.</p>
+        <p className="placeholder">
+          {touch
+            ? "Tap a gate to see its matrix and the rotation it performs. To preview a gate before applying it, touch and hold it."
+            : "Point at a gate to see its matrix and the rotation it performs."}
+        </p>
       </section>
     );
   }
@@ -49,7 +55,7 @@ export function GatePanel() {
         </h2>
         <button
           type="button"
-          className="link-button"
+          className="link-button wide-only"
           onClick={() => {
             useLab.getState().open([tileFromSpec(spec)]);
             goToRoom("lab");

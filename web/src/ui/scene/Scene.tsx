@@ -34,7 +34,10 @@ export function Scene({ source, children, stepAxis = "always" }: SceneProps) {
   return (
     <SceneSourceContext.Provider value={source}>
       <OverlayContext.Provider value={overlay}>
+        {/* Fills its box, which the room positions; a percentage height wouldn't resolve in the narrow
+            layout's flexible column (design.md §5.1). */}
         <Canvas
+          style={{ position: "absolute", inset: 0 }}
           flat
           frameloop="demand"
           dpr={[1, 2]}

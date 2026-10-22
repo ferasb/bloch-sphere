@@ -20,14 +20,24 @@ interface PopoverProps {
   children: (close: () => void) => ReactNode;
 }
 
-/** Put a popover (position: fixed) next to its button: below or above it, lined up with its left or right edge. */
+/** The room kept between a popover and the window's edge. */
+const EDGE = 8;
+
+/**
+ * Put a popover (position: fixed) next to its button: below or above it, lined up with its left or
+ * right edge, but never across the window's edge. It scrolls when it's taller than the room left.
+ */
 export function placeNextTo(button: HTMLElement, popover: HTMLElement, placement: "below" | "above", align: "start" | "end"): void {
   const r = button.getBoundingClientRect();
   const style = popover.style;
+  // Still hidden, so it has no size yet: take its width from the CSS, capped as styles.css caps it.
+  const width = Math.min(parseFloat(getComputedStyle(popover).width) || 0, window.innerWidth - 2 * EDGE);
+  const left = align === "start" ? r.left : r.right - width;
+  style.left = `${Math.max(EDGE, Math.min(left, window.innerWidth - EDGE - width))}px`;
+  style.right = "auto";
   style.top = placement === "below" ? `${r.bottom + 8}px` : "auto";
   style.bottom = placement === "above" ? `${window.innerHeight - r.top + 8}px` : "auto";
-  style.left = align === "start" ? `${r.left}px` : "auto";
-  style.right = align === "end" ? `${window.innerWidth - r.right}px` : "auto";
+  style.maxHeight = `${(placement === "below" ? window.innerHeight - r.bottom : r.top) - 8 - EDGE}px`;
 }
 
 /**

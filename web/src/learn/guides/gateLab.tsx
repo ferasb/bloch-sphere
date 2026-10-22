@@ -44,8 +44,8 @@ export function GateLab() {
           the answer is always one rotation of the sphere.
         </p>
         <p>
-          Open it with <strong>Gate Lab</strong> at the top of the app. It keeps its bench while you go back and forth, and gates you save there
-          show up on the sphere's gate bar.
+          Open it with <strong>Gate Lab</strong> at the top of the app, on a computer or a tablet held sideways: it needs a wider screen than a
+          phone's. It keeps its bench while you go back and forth, and gates you save there show up on the sphere's gate bar.
         </p>
       </Beside>
 

@@ -86,7 +86,7 @@ export function ChallengeCard() {
       </div>
       <p>
         Get <QubitTag name="q1" colorSlot={1} /> from <Tex tex={labelTex(c.from)} /> to <Tex tex={labelTex(c.to)} /> using only{" "}
-        <strong>{gateListText(c.gates, "and")}</strong>. The ring marks the goal.
+        <strong>{gateListText(c.gates, "and")}</strong>.<span className="challenge-ring-note"> The ring marks the goal.</span>
       </p>
       {solved && settled ? (
         <div className="challenge-solved" role="status">
@@ -103,7 +103,7 @@ export function ChallengeCard() {
           )}
         </div>
       ) : (
-        <>
+        <div className="challenge-progress">
           <p className="challenge-status">
             Gates used: {gates} · Fewest possible: {c.par}
           </p>
@@ -112,11 +112,12 @@ export function ChallengeCard() {
               <summary>Hint</summary>
               <p className="hint">{c.hint}</p>
             </details>
-            <button type="button" className="button-small" onClick={reset} disabled={gates === 0}>
+            {/* On a narrow screen the journey's Reset, always at hand, does the same (design.md §5.1). */}
+            <button type="button" className="button-small wide-only" onClick={reset} disabled={gates === 0}>
               Start over
             </button>
           </div>
-        </>
+        </div>
       )}
     </section>
   );

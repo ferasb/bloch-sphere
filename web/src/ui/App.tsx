@@ -3,6 +3,7 @@ import { GateToolbar } from "./controls/GateToolbar";
 import { QubitStrip } from "./controls/QubitStrip";
 import { ThemeButton } from "./controls/ThemeButton";
 import { GateLab } from "./lab/GateLab";
+import { NARROW, TOUCH, useMedia } from "./media";
 import { GatePanel } from "./panels/GatePanel";
 import { JourneyBar } from "./panels/JourneyBar";
 import { LibraryNotice } from "./panels/LibraryNotice";
@@ -26,6 +27,7 @@ const ROOMS: [Room, string][] = [
 /** The shell: the title, the room switcher, and whichever room is open (design-gates.md §5). */
 export function App() {
   const room = useRoom();
+  const narrow = useMedia(NARROW);
   return (
     <div className="app">
       <header className="topbar">
@@ -53,7 +55,7 @@ export function App() {
           </div>
         </div>
       </header>
-      {room === "lab" ? <GateLab /> : <SphereRoom />}
+      {room === "sphere" ? <SphereRoom /> : narrow ? <LabTooNarrow /> : <GateLab />}
     </div>
   );
 }
@@ -64,18 +66,22 @@ export function App() {
  */
 function SphereRoom() {
   useShortcuts();
+  const touch = useMedia(TOUCH);
   return (
     <>
       <main className="scene" aria-label="Bloch sphere">
         <QubitStrip />
         <div className="viewport">
-          <Scene source={journeySource}>
-            <ChallengeTarget />
-          </Scene>
+          {/* Over the sphere on a wide screen; above it on a narrow one (design.md §5.1). */}
           <ChallengeCard />
-          <p className="scene-hint">Drag to rotate · Scroll to zoom</p>
-          <RestoreNotice />
-          <LibraryNotice />
+          <div className="viewport-sphere">
+            <Scene source={journeySource}>
+              <ChallengeTarget />
+            </Scene>
+            <p className="scene-hint">{touch ? "Drag to rotate · Pinch to zoom" : "Drag to rotate · Scroll to zoom"}</p>
+            <RestoreNotice />
+            <LibraryNotice />
+          </div>
         </div>
         <GateToolbar />
       </main>
@@ -85,5 +91,24 @@ function SphereRoom() {
       </aside>
       <JourneyBar />
     </>
+  );
+}
+
+/** The Gate Lab on a narrow screen: it needs the width (design.md §5.1), so say so and offer the way back. */
+function LabTooNarrow() {
+  return (
+    <main className="lab-narrow" aria-labelledby="lab-narrow-heading">
+      <h2 id="lab-narrow-heading">The Gate Lab needs a wider screen</h2>
+      <p>
+        It's where you combine gates into your own. It shows your gates, a test sphere and the result side by side, and they don't fit on a screen
+        this narrow. Open it on a computer, or on a tablet held sideways.
+      </p>
+      <div className="lab-narrow-actions">
+        <button type="button" className="button-accent" onClick={() => goToRoom("sphere")}>
+          Back to the sphere
+        </button>
+        <a href="learn/gate-lab/">About the Gate Lab ›</a>
+      </div>
+    </main>
   );
 }

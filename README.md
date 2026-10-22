@@ -6,7 +6,7 @@ An interactive Bloch sphere for students meeting quantum computing for the first
 
 ## What you can do
 
-- **Apply gates and watch them turn the sphere.** X, Y, Z, H, S, T, S†, T†, and rotations about x, y or z by any angle. Point at a gate to preview where it takes the qubit before you click.
+- **Apply gates and watch them turn the sphere.** X, Y, Z, H, S, T, S†, T†, and rotations about x, y or z by any angle. Point at a gate (or hold it, on a touch screen) to preview where it takes the qubit before you apply it.
 - **Up to five qubits,** each with its own color and arrow. Apply a gate to one of them or to all at once.
 - **See the state in several ways:** the ket with exact values (1/√2, e^{iπ/4}), the state vector, circle notation, measurement probabilities, and the angles θ and φ.
 - **See the gate as a matrix and as a rotation:** "Rotates the sphere 45° about z."
@@ -15,7 +15,7 @@ An interactive Bloch sphere for students meeting quantum computing for the first
 - **Play challenges.** Get a qubit to a goal using only some gates, in as few as you can.
 - **Learn the basics.** [Guides](https://bloch-sphere.ferasbisharat.com/learn/) to qubits, the Bloch sphere, measurement and every gate, in plain words first, with links that set up the sphere to try each idea. In the app, click a label such as θ or "vector" for a short definition.
 
-It's made for desktop browsers, in light or dark: it follows your system until you switch with the theme button in the top bar. Keyboard: X, Y, Z, H, S, T apply gates (Shift+S and Shift+T for S† and T†), 1–5 select a qubit, A applies to all, Ctrl+Z undoes.
+It's made for desktop browsers first, and the sphere and the challenges work on phones and tablets too (the Gate Lab needs a wider screen). Light or dark: it follows your system until you switch with the theme button in the top bar. Keyboard: X, Y, Z, H, S, T apply gates (Shift+S and Shift+T for S† and T†), 1–5 select a qubit, A applies to all, Ctrl+Z undoes.
 
 Your work stays in your browser. There are no accounts, cookies, analytics or third-party requests; see the [privacy page](web/public/privacy.html). Questions or ideas: open an issue, or write to ferasbish@gmail.com.
 

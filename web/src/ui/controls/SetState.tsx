@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { parseComplex } from "../../format/parse";
 import { NAMED_STATES, Qubit } from "../../math/qubit";
+import { usePreviewPress } from "../previewPress";
 import { useApp } from "../store";
 import { Popover } from "../widgets/Popover";
 
@@ -61,32 +62,30 @@ function SetStateTabs({ onDone }: { onDone: () => void }) {
 }
 
 function Presets({ onDone }: { onDone: () => void }) {
-  const { setStartState, setPreview } = useApp.getState();
   return (
     <div className="preset-grid">
-      {NAMED_STATES.map(({ label, state }) => {
-        const show = () => setPreview({ kind: "state", state });
-        const hide = () => setPreview(null);
-        return (
-          <button
-            key={label}
-            type="button"
-            className="ket-button"
-            onClick={() => {
-              hide();
-              setStartState(state);
-              onDone();
-            }}
-            onPointerEnter={show}
-            onPointerLeave={hide}
-            onFocus={show}
-            onBlur={hide}
-          >
-            {label}
-          </button>
-        );
-      })}
+      {NAMED_STATES.map(({ label, state }) => (
+        <Preset key={label} label={label} state={state} onDone={onDone} />
+      ))}
     </div>
+  );
+}
+
+/** A preset: point at it (or hold it) to preview, click to set. */
+function Preset({ label, state, onDone }: { label: string; state: Qubit; onDone: () => void }) {
+  const { setStartState, setPreview } = useApp.getState();
+  const press = usePreviewPress(
+    () => setPreview({ kind: "state", state }),
+    () => setPreview(null),
+    () => {
+      setStartState(state);
+      onDone();
+    },
+  );
+  return (
+    <button type="button" className="ket-button" {...press}>
+      {label}
+    </button>
   );
 }
 
