@@ -66,6 +66,7 @@ export function StatePanel() {
               <Tex tex="P(0)" />
             </Term>
           }
+          name="Probability of measuring 0"
           p={p0}
           colorSlot={entry.colorSlot}
         />
@@ -75,6 +76,7 @@ export function StatePanel() {
               <Tex tex="P(1)" />
             </Term>
           }
+          name="Probability of measuring 1"
           p={p1}
           colorSlot={entry.colorSlot}
         />
