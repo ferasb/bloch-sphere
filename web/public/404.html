@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex" />
+    <!-- GitHub Pages serves this for any address that doesn't exist, at that address: links are absolute. -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <script src="/theme-init.js"></script>
+    <title>Page not found · Bloch Sphere</title>
+    <style>
+      /* Colors copy the tokens in src/theme.css, light and dark, (--bg, --text, --text-muted, --primary). Same look as about.html and privacy.html. */
+      :root {
+        color-scheme: light dark;
+      }
+      /* public/theme-init.js sets data-theme when the visitor picked a theme in the app. */
+      :root[data-theme="light"] {
+        color-scheme: light;
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+      }
+      body {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 40px 24px 64px;
+        background: light-dark(oklch(0.985 0.005 264), oklch(0.15 0.025 264));
+        color: light-dark(oklch(0.22 0.03 264), oklch(0.96 0.015 264));
+        font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      h1 {
+        margin: 24px 0 8px;
+        font-size: 28px;
+      }
+      h2 {
+        margin: 32px 0 8px;
+        font-size: 18px;
+      }
+      .lead {
+        font-size: 18px;
+      }
+      .muted {
+        color: light-dark(oklch(0.47 0.05 264), oklch(0.76 0.05 264));
+        font-size: 14px;
+      }
+      a {
+        color: light-dark(oklch(0.5 0.15 264), oklch(0.76 0.1 264));
+        text-underline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Page not found</h1>
+    <p>
+      There's no page at this address. Maybe the link has a typo, or the page moved.
+    </p>
+    <ul>
+      <li><a href="/">Open the Bloch sphere</a></li>
+      <li><a href="/learn/">Read the guides</a>: qubits, the Bloch sphere, measurement and every gate</li>
+    </ul>
+    <p class="muted">Made by <a href="https://ferasbisharat.com">Feras Bisharat</a> · Also: <a href="https://rekt.ferasbisharat.com">rekt</a>, a trading game</p>
+  </body>
+</html>
