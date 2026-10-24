@@ -7,6 +7,12 @@ import { linkHash, parseLink, type Link } from "../model/link";
  * nothing here runs in the browser.
  */
 
+/**
+ * The book the guides recommend for what comes next (design.md §13.1). Its home page only: its
+ * section pages are numbered and move. Linked, never copied: its licence allows no adaptations.
+ */
+export const BOOK_URL = "https://qubit.guide/";
+
 /** The page being rendered, so links can be written relative to it. */
 export const PageContext = createContext<string>("");
 
@@ -64,7 +70,9 @@ export function TryIt({ hash, children }: { hash: string; children: ReactNode })
   const from = useContext(PageContext);
   return (
     <a className="try-it" href={relative(from, "") + linkHash(link(hash))}>
-      <span className="try-it-label">Try it</span> {children}
+      <span className="try-it-label">Try it</span>
+      {/* One flex item, so text and kets inside it aren't spaced apart by the flex gap. */}
+      <span>{children}</span>
     </a>
   );
 }

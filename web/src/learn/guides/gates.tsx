@@ -89,6 +89,23 @@ export function Gates() {
         </p>
       </Section>
 
+      <Section id="fixed-states" title="The states a gate leaves alone">
+        <p>
+          A gate's axis meets the sphere at two opposite points, and the states there are the ones the gate doesn't move: it can only multiply
+          each of them by a factor, which is a global phase. X leaves {k`+`} and {k`-`} where they are; Z, S and T leave {k`0`} and {k`1`}.
+          Unless a gate does nothing at all, every other state moves.
+        </p>
+        <p>
+          In matrix language, these two states are the gate's <strong>eigenvectors</strong>, and their factors are its{" "}
+          <strong>eigenvalues</strong>. The angle between the two factors is the angle of the turn. For S:
+        </p>
+        {md`S\,|0\rangle = 1\cdot|0\rangle, \qquad S\,|1\rangle = i\,|1\rangle`}
+        <p>
+          The factors {m`1`} and {m`i`} are 90° apart, and S is a 90° turn. For X, the factors on {k`+`} and {k`-`} are {m`1`} and {m`-1`}, 180°
+          apart: a half turn.
+        </p>
+      </Section>
+
       <Section id="global-phase" title="Different matrices, same rotation">
         <p>
           Two matrices that differ only by a factor in front, such as {m`-1`} or {m`i`}, make the same rotation: the factor is a global phase,

@@ -68,6 +68,24 @@ export function Measurement() {
         </p>
       </Section>
 
+      <Section id="telling-apart" title="Telling two states apart">
+        <p>
+          Say someone hands you a qubit in one of two states you know, {k`0`} or {k`+`}, each equally likely, and you must say which. If the two
+          were opposite on the sphere, one measurement along their axis would always get it right. These two aren't: they're 90° apart.
+        </p>
+        <p>
+          Then no measurement is right every time. The best you can do is measure along the axis parallel to the line from one arrow's tip to
+          the other's, and name the state at the end of the axis you get. With the arrows an angle {m`\Theta`} apart, their coordinates along that axis are {m`\sin\tfrac{\Theta}{2}`} and{" "}
+          {m`-\sin\tfrac{\Theta}{2}`}, so the rule above gives the same chance of naming either one right:
+        </p>
+        {md`P(\text{right}) = \frac{1 + \sin\frac{\Theta}{2}}{2}`}
+        <p>
+          For {k`0`} and {k`+`}, 90° apart, that's about 85%. Opposite states, 180° apart, give 100%, and two copies of the same state give 50%,
+          a coin toss. No cleverer measurement does better; this limit is a theorem, due to Carl Helstrom. It's also where quantum
+          cryptography starts: send bits as states that aren't opposite, and someone who intercepts them can't read them reliably.
+        </p>
+      </Section>
+
       <Note title="In the app">
         <p>
           This site doesn't simulate measurement yet. The State panel shows P(0) and P(1) for the selected qubit as bars, and they move as gates
@@ -79,7 +97,14 @@ export function Measurement() {
         <TryRow>
           <TryIt hash="#/?start=0&gates=Ry(60)">Tilt {k`0`} by 60°: P(0) drops to 75%</TryIt>
           <TryIt hash="#/?start=+&gates=Rz(90)">Turn {k`+`} about z: the odds stay 50/50</TryIt>
+          <TryIt hash="#/?start=0,+&gates=Ry(45)">
+            {k`0`} and {k`+`}, turned so the best axis is z: 85% right
+          </TryIt>
         </TryRow>
+        <p>
+          The last link turns both states 45° about y, which brings the best axis for telling them apart onto z. q1 ({k`0`}) then shows P(0) =
+          85.4% and q2 ({k`+`}) shows P(1) = 85.4%: the chance of naming each one right.
+        </p>
         <p>
           Next: <A to="learn/gates/">gates are rotations</A>.
         </p>

@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { GLOSSARY } from "../format/glossary";
-import { A, Section } from "./components";
+import { A, BOOK_URL, Section } from "./components";
 import { BlochSphere } from "./guides/blochSphere";
 import { GateLab } from "./guides/gateLab";
 import { Hadamard, PauliX, PauliY, PauliZ, RotationGates, SAndT } from "./guides/gateGuides";
 import { Gates } from "./guides/gates";
+import { Interference } from "./guides/interference";
 import { KeyStates } from "./guides/keyStates";
 import { Measurement } from "./guides/measurement";
 import { Qubit } from "./guides/qubit";
@@ -63,6 +64,20 @@ function Hub() {
             </div>
           ))}
         </dl>
+      </Section>
+      <Section id="keep-learning" title="Keep learning">
+        <p>
+          These guides stick to one qubit. A good next step is the free online book{" "}
+          <a href={BOOK_URL}>
+            <cite>Introduction to Quantum Information Science</cite>
+          </a>{" "}
+          by Artur Ekert, Tim Hosgood, Alastair Kay and Chiara Macchiavello. It covers qubits, gates and measurement in more depth, then goes
+          on to what this site leaves out: entanglement, mixed states, quantum algorithms, cryptography and error correction.
+        </p>
+        <p>
+          It's more mathematical than these guides: it expects you to be comfortable with complex numbers, vectors and matrices. It uses the
+          same notation as this site, so the kets, the Bloch sphere and the gates you've met here carry over.
+        </p>
       </Section>
     </>
   );
@@ -164,6 +179,14 @@ export const PAGES: Page[] = [
     heading: "Rotation gates: Rx, Ry and Rz",
     description: "Rotation gates Rx(θ), Ry(θ) and Rz(θ): their matrices, why they use half angles, and how Pauli, S and T gates are rotations too.",
     Body: RotationGates,
+  },
+  {
+    path: "learn/interference/",
+    name: "Interference",
+    title: "Quantum Interference on the Bloch Sphere: H, Phase, H",
+    heading: "Interference: how phase becomes odds",
+    description: "How a phase no measurement can see becomes odds you can: H, a turn about z, then H. Amplitudes add up or cancel out, and P(0) = cos²(φ/2).",
+    Body: Interference,
   },
   {
     path: "learn/gate-lab/",

@@ -2,10 +2,14 @@ import { describe, expect, it } from "vitest";
 import { gateLearnPath } from "../format/gateNames";
 import { GLOSSARY } from "../format/glossary";
 import { parseLink } from "../model/link";
-import { PAGE_PATHS, PAGES, renderPage, sitemap } from "./site";
+import { BOOK_URL } from "./components";
+import { PAGE_PATHS, PAGES, renderPage, SITE_URL, sitemap } from "./site";
 
 /** Files in public/ that pages may link to. */
 const PUBLIC_FILES = ["about.html", "privacy.html", "favicon.svg", "favicon.ico", "apple-touch-icon.png"];
+
+/** Other sites pages may link to; the book at its home page only, since its section pages move (design.md §13.1). */
+const OTHER_SITES = ["https://github.com/ferasb/bloch-sphere", "https://ferasbisharat.com", BOOK_URL];
 
 /** Resolve a relative href against a page's path: ("learn/gates/x/", "../../qubit/") → "learn/qubit/". */
 function resolve(from: string, href: string): string {
@@ -34,9 +38,15 @@ describe("Learn pages", () => {
     expect(JSON.parse(json)["@type"]).toBe("BreadcrumbList");
   });
 
-  it.each(rendered.map(({ page, html }) => [page.path, html]))("%s links only to pages that exist, and its Try it links work", (path, html) => {
+  it.each(rendered.map(({ page, html }) => [page.path, html]))("%s links only to pages and sites that exist, and its Try it links work", (path, html) => {
     for (const [, href] of html.matchAll(/href="([^"]*)"/g)) {
-      if (/^https?:/.test(href) || href.startsWith("/src/")) {
+      if (/^https?:/.test(href)) {
+        if (!href.startsWith(SITE_URL)) {
+          expect(OTHER_SITES, href).toContain(href);
+        }
+        continue;
+      }
+      if (href.startsWith("/src/")) {
         continue;
       }
       const target = resolve(path, href.replace(/&amp;/g, "&"));

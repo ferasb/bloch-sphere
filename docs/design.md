@@ -436,6 +436,7 @@ Each phase ends with a working, deployable site.
 | 2026-10-22 | **Terms explain the app's labels** (section 13.3); one glossary for the app and the Learn hub. |
 | 2026-10-22 | **Search basics, no analytics** (section 13.5). |
 | 2026-10-22 | **Phones and tablets get the Sphere room and the challenges** (replaces *Desktop only*): one scrolling column on narrow screens, press and hold to preview a gate, and the Gate Lab on wide screens only (section 5.1). The guides bring visitors on phones, and their Try it links open the app. |
+| 2026-10-24 | **A guide to interference, and one book to read next: qubit.guide** (section 13.1). The book is linked from the guides, never copied: its licence allows no adaptations. |
 
 ---
 
@@ -445,12 +446,13 @@ Added 2026-10-22. The app shows what happens; these explain why, and let people 
 
 ### 13.1 The Learn pages
 
-- **What:** short guides at `/learn/`: what a qubit is, the Bloch sphere (θ, φ, the Bloch vector, global phase), the six key states, measurement, gates as rotations, one page per gate (Pauli-X, Y, Z, Hadamard, S and T, rotation gates), and the Gate Lab. The hub lists them in reading order with the glossary (13.3); each page has Previous and Next.
+- **What:** short guides at `/learn/`: what a qubit is, the Bloch sphere (θ, φ, the Bloch vector, global phase), the six key states, measurement, gates as rotations, one page per gate (Pauli-X, Y, Z, Hadamard, S and T, rotation gates), interference (H, a turn about z, H: how a phase becomes odds), and the Gate Lab. The hub lists them in reading order with the glossary (13.3), and ends with one book to read next (below); each page has Previous and Next.
 - **Each page:** plain words first, then a picture, then "the math", then Try it links into the app (13.2). Beginner language must not become wrong: no "0 and 1 at once"; orthogonal states are opposite points; global phase is invisible; one qubit only.
 - **Separate pages, not text under the sphere.** On a desktop the app fills the window with no page scroll (section 5), so the guides are pages of their own, readable without JavaScript, which is also what search engines need.
 - **Static HTML, built from React** (`src/learn/`, rendered with `renderToStaticMarkup` when the site is built, by `plugins/learnPages.ts`). Each page is one more HTML entry of the Vite build, so it gets the CSP and its own small stylesheet and script (the theme button), and the dev server renders the pages on request. No framework change: the app stays a client-side React app. Pre-rendering the app itself was not done: its visible text is mostly numbers and buttons, and it would risk a flash when the app takes over.
 - **The numbers come from the app's math.** Matrices, "as a rotation" equations with their global phase, the tables of what each gate does to the six key states (`format/gateFacts.ts`), and the pictures (`learn/figure.tsx`: SVG spheres drawn from the same math, seen from the app's starting camera, colored by the theme tokens) are computed when the site is built, so they can't disagree with the sphere. Facts the prose states by hand are checked in `learn/claims.test.ts`. KaTeX runs with `throwOnError` and `strict`, so a typo in a formula fails the build.
-- **Tests** (`learn/learn.test.ts`): every page renders, has one h1, a canonical URL and breadcrumbs, a title of at most 60 characters and a description of at most 155; every link leads to a page that exists; every Try it link parses.
+- **Tests** (`learn/learn.test.ts`): every page renders, has one h1, a canonical URL and breadcrumbs, a title of at most 60 characters and a description of at most 155; every link leads to a page that exists; every Try it link parses; links to other sites go only to those listed.
+- **What to read next:** *Introduction to Quantum Information Science* by Artur Ekert, Tim Hosgood, Alastair Kay and Chiara Macchiavello, free at [qubit.guide](https://qubit.guide/). It starts where this site stops (entanglement, mixed states, algorithms, cryptography, error correction), and it uses the same notation. The hub's Keep learning section recommends it, and the Bloch sphere page links to it where it says what the site leaves out. Its licence, CC BY-NC-ND 4.0, allows no adaptations, so the guides link to it and never copy, paraphrase or redraw it. Ideas that are standard physics (interference, the best way to tell two states apart) are explained here in our own words, with our own pictures and examples. Links go to its home page only: its section pages are numbered and move, and the tests can't check other sites.
 
 ### 13.2 Readable links
 
@@ -498,3 +500,4 @@ Added 2026-10-22. The app shows what happens; these explain why, and let people 
   - [Bloch sphere with React Three Fiber](https://github.com/th3-Rocha/Bloch-sphere-with-React-Three-Fiber)
   - [UC Bloch Sphere Simulation (record and playback)](https://eecs.ceas.uc.edu/~cahaymm/blochsphere/index.html)
   - [QuTiP Interactive ideas](https://qutip.readthedocs.io/en/latest/development/ideas/qutip-interactive.html)
+- Further reading, recommended on the Learn pages: [Introduction to Quantum Information Science](https://qubit.guide/) by Artur Ekert, Tim Hosgood, Alastair Kay and Chiara Macchiavello (CC BY-NC-ND 4.0)

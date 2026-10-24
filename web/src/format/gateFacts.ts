@@ -26,10 +26,15 @@ function factorTex(c: Complex): string {
   return (negative ? "-" : "") + (tex === "1" ? "" : tex);
 }
 
-/** A gate's matrix as LaTeX, with exact entries where it can (1/√2, e^{iπ/4}, …). */
+/**
+ * A gate's matrix as LaTeX, with exact entries where it can (1/√2, e^{iπ/4}, …). Rows of fractions
+ * are stretched apart; at the usual height, one row's √2 touches the next row's numerator.
+ */
 export function matrixTex(gate: Gate): string {
   const [[a, b], [c, d]] = gate.matrix;
-  return `\\begin{bmatrix} ${complexTexSigned(a)} & ${complexTexSigned(b)} \\\\ ${complexTexSigned(c)} & ${complexTexSigned(d)} \\end{bmatrix}`;
+  const [ta, tb, tc, td] = [a, b, c, d].map(complexTexSigned);
+  const matrix = `\\begin{bmatrix} ${ta} & ${tb} \\\\ ${tc} & ${td} \\end{bmatrix}`;
+  return [ta, tb, tc, td].some((t) => t.includes("frac")) ? `{\\def\\arraystretch{1.5}${matrix}}` : matrix;
 }
 
 /**

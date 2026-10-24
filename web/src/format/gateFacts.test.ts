@@ -29,8 +29,11 @@ describe("keyStateMoves", () => {
 });
 
 describe("gate formulas", () => {
-  it("writes matrices with exact entries", () => {
-    expect(matrixTex(Gate.H)).toBe("\\begin{bmatrix} \\tfrac{1}{\\sqrt{2}} & \\tfrac{1}{\\sqrt{2}} \\\\ \\tfrac{1}{\\sqrt{2}} & -\\tfrac{1}{\\sqrt{2}} \\end{bmatrix}");
+  it("writes matrices with exact entries, stretching rows of fractions apart", () => {
+    expect(matrixTex(Gate.H)).toBe(
+      "{\\def\\arraystretch{1.5}\\begin{bmatrix} \\tfrac{1}{\\sqrt{2}} & \\tfrac{1}{\\sqrt{2}} \\\\ \\tfrac{1}{\\sqrt{2}} & -\\tfrac{1}{\\sqrt{2}} \\end{bmatrix}}",
+    );
+    expect(matrixTex(Gate.X)).toBe("\\begin{bmatrix} 0 & 1 \\\\ 1 & 0 \\end{bmatrix}");
   });
 
   it("finds the global phase between a gate and its rotation", () => {

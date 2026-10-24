@@ -490,6 +490,8 @@ a:focus-visible {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  /* A long link wraps its own text, not the label. */
+  white-space: nowrap;
 }
 
 .try-it-label::before {

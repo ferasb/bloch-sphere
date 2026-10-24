@@ -8,6 +8,9 @@ import { GatePage, KeyStateTable } from "./gatePage";
 
 const DEG = Math.PI / 180;
 
+/** √X, as the Gate Lab makes it (X, Fraction ½). */
+const SQRT_X = Gate.X.power(0.5);
+
 /** "Next" and "see also" links at the end of a gate page. */
 function Related({ links }: { links: [string, string][] }) {
   return (
@@ -65,11 +68,30 @@ export function PauliX() {
         </p>
       </Section>
 
+      <Section id="square-root" title="A square root of NOT">
+        <p>
+          A puzzle: find a gate that, applied twice, is NOT. For an ordinary bit there isn't one. A gate on one bit can only keep the bit, flip
+          it, or set it to 0 or to 1, and doing any of those twice keeps the bit or sets it, never flips it.
+        </p>
+        <p>
+          For a qubit it's easy. X is a half turn about x, so a quarter turn about x, done twice, is X. That quarter turn is the{" "}
+          <strong>square root of X</strong>, written √X:
+        </p>
+        <Tex tex={`\\sqrt{X} = ${matrixTex(SQRT_X)}`} display />
+        <p>
+          After one √X, {k`0`} is at {k`-i`}, on the equator, where a measurement gives 0 or 1 at random. After the second, it's at {k`1`},
+          every time. Two steps that each look like a coin toss add up to a certain flip, because their amplitudes interfere: see{" "}
+          <A to="learn/interference/">Interference</A>. To build √X yourself, put X on the Gate Lab's bench and choose{" "}
+          <strong>Fraction ½</strong>.
+        </p>
+      </Section>
+
       <Section id="try" title="Try it">
         <TryRow>
           <TryIt hash="#/?start=0&gates=X">X on {k`0`}</TryIt>
           <TryIt hash="#/?start=60:45&gates=X">X on a tilted state</TryIt>
           <TryIt hash="#/?start=+&gates=X">X on {k`+`}: nothing moves</TryIt>
+          <TryIt hash="#/?start=0&gates=Rx(90),Rx(90)">Two quarter turns about x make X</TryIt>
         </TryRow>
         <Related
           links={[

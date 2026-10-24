@@ -1,5 +1,5 @@
 import { Qubit } from "../../math/qubit";
-import { A, Beside, Figure, k, m, md, Note, Section, TryIt, TryRow } from "../components";
+import { A, Beside, BOOK_URL, Figure, k, m, md, Note, Section, TryIt, TryRow } from "../components";
 import { SphereFigure } from "../figure";
 
 const EXAMPLE = Qubit.fromBlochAngles(Math.PI / 3, Math.PI / 3);
@@ -111,6 +111,13 @@ export function BlochSphere() {
         <p>
           Points <em>inside</em> the ball also mean something: they're <strong>mixed states</strong>, a qubit whose state is uncertain, for
           example one that is {k`0`} or {k`1`} with equal chances, which sits at the center. This site sticks to pure states, on the surface.
+        </p>
+        <p>
+          Entanglement and mixed states are where this site stops. The free online book{" "}
+          <a href={BOOK_URL}>
+            <cite>Introduction to Quantum Information Science</cite>
+          </a>{" "}
+          covers both, and much more; see <A to="learn/#keep-learning">Keep learning</A>.
         </p>
       </Section>
 
